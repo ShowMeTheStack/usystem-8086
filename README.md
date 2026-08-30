@@ -1,3 +1,5 @@
+**Try it in your browser at http://8086.jyotiprakash.org**
+
 # µSystem 8086
 
 **It boots FreeDOS.** The PC/XT preset — an 8088, 74LS glue, 8237A DMA, µPD765
