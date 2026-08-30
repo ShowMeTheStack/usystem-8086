@@ -1,0 +1,7 @@
+node_modules/
+tests/sstcache/
+dev.html
+.DS_Store
+
+# index.html and guide/ are BUILT but versioned on purpose: this repo is the
+# published static site — GitHub Pages serves it straight from the branch.

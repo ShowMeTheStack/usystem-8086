@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" data-page="memory">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memory and the address map — µSystem 8086</title>
+<meta name="description" content="Hex editors at two altitudes, and an address map that is measured from your gates rather than declared.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html" class="here">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>Memory and the address map</h1>
+    <p class="lede">Hex editors at two altitudes, and an address map that is measured from your gates rather than declared.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#unified-memory">Unified memory</a><a href="#per-chip-memory">Per-chip memory</a>
+      <div class="tocmeta">6 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>Most simulators ask you to declare where memory lives. This one <strong>measures</strong> it: the
+      analyzer drives the CPU's address pins through your real decode gates and records which chip answers,
+      for every window in the megabyte. What you see is what your wiring actually does — including the mirrors
+      that partial decoding creates, which is exactly the lesson cheap kits taught by accident.</p></div><section id="unified-memory" class="sub" data-name="unified memory">
+      <h2>Unified memory</h2>
+      <p>One hex editor across the whole address space, writing through the proved map.
+        The range dropdown lists every window the prober found, marking aliases and the reset vector.</p>
+      <div class="grid">
+<figure class="shot" data-i="464">
+  <img loading="lazy" src="shots/mem-unified.jpg" alt="The unified memory view">
+  <figcaption><b>The unified memory view</b> — One hex editor across the whole address space, writing through the proved map.</figcaption>
+</figure>
+<figure class="shot" data-i="465">
+  <img loading="lazy" src="shots/mem-ranges.jpg" alt="Where everything answers">
+  <figcaption><b>Where everything answers</b> — The range dropdown lists every window the prober found, marking aliases — the mirrors partial decoding creates — and the reset vector.</figcaption>
+</figure>
+<figure class="shot" data-i="466">
+  <img loading="lazy" src="shots/mem-live.jpg" alt="Memory while running">
+  <figcaption><b>Memory while running</b> — The view is live: watch the stack change as CALLs push, or find the byte your program just wrote.</figcaption>
+</figure>
+<figure class="shot" data-i="467">
+  <img loading="lazy" src="shots/mem-xt.jpg" alt="A full PC memory map">
+  <figcaption><b>A full PC memory map</b> — On the XT board the same prober finds 512K of RAM, the video window, the option ROM and the BIOS — each measured, not declared.</figcaption>
+</figure></div>
+    </section><section id="per-chip-memory" class="sub" data-name="per-chip memory">
+      <h2>Per-chip memory</h2>
+      <p>Double-click a memory chip for its own bytes, always addressed from zero — the
+        chip's point of view, with no knowledge of where the board maps it. Edits to a ROM are kept when you
+        press Start; pressing Assemble reclaims it for the code pane.</p>
+      <div class="grid">
+<figure class="shot" data-i="468">
+  <img loading="lazy" src="shots/mem-chip.jpg" alt="Chip-local hex editor">
+  <figcaption><b>Chip-local hex editor</b> — Double-click a memory chip for its own bytes, always addressed from zero — the chip's point of view, with no knowledge of where the board maps it.</figcaption>
+</figure>
+<figure class="shot" data-i="469">
+  <img loading="lazy" src="shots/mem-rom.jpg" alt="The ROM, byte by byte">
+  <figcaption><b>The ROM, byte by byte</b> — The assembled program as it sits in the EPROM — including the far jump at the reset vector that starts the machine. Hand edits here are kept when you press Start; pressing Assemble reclaims the ROM for the code pane.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

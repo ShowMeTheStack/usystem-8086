@@ -1,0 +1,13 @@
+{
+  "name": "usystem-8086",
+  "version": "0.1.0",
+  "description": "Single-file, cycle-accurate 8086/8088 system simulator for education",
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node tests/smoke.mjs",
+    "guide": "node build.mjs && node tools/guide/shoot.mjs && node tools/guide/build.mjs",
+    "guide:site": "node tools/guide/build.mjs"
+  }
+}

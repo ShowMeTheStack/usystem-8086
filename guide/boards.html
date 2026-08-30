@@ -1,0 +1,1401 @@
+<!doctype html>
+<html lang="en" data-page="boards">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The 21 boards — µSystem 8086</title>
+<meta name="description" content="Every shipped design explained in full — the chips, the wiring, the memory map, the program, and the experiments worth running on it.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html" class="here">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead"><h1>The 21 boards</h1><p class="lede">Every shipped design explained in full — the chips, the wiring, the memory map, the program, and the experiments worth running on it.</p></div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">The boards</div>
+      <a href="#blank">— blank board —</a><a href="#logic-counter">Logic lab: ripple counter</a><a href="#min-8088">Minimal 8088 kit</a><a href="#irq-lab">Interrupt &amp; timer lab</a><a href="#max-8088">Max-mode 8088 + 8288</a><a href="#word-8086">8086 word machine (byte lanes)</a><a href="#hgc-8088">Hercules video kit</a><a href="#kbd-8088">PC typewriter (keyboard + video)</a><a href="#uart-lab">Serial console (8250 UART)</a><a href="#pc-xt">PC/XT — boots FreeDOS</a><a href="#dual-8088">Dual 8088 — shared RAM (8289)</a><a href="#traffic-8255">Traffic light (8255)</a><a href="#dip-echo">DIP switches → LEDs</a><a href="#seg7-count">7-segment counter</a><a href="#wait-state">Wait-state generator</a><a href="#mixed-cpu">Mixed 8086 + 8088 — shared RAM</a><a href="#pc-speaker">PIT speaker (music)</a><a href="#lpt-printer">LPT1 printer</a><a href="#pic-cascade">Cascaded 8259As (15 IRQs)</a><a href="#pit-modes">8254 timer modes</a><a href="#fixit-lab">Fix this board!</a>
+      <div class="tocmeta">173 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>Twenty-one boards ship with the tool. They are not fixtures or screenshots: each one is built
+      by code that places real components and wires real pins, so you can open any of them, take it
+      apart, rewire it, and save your version. Nine carry a <strong>guided lab</strong> — a numbered
+      exercise with steps you tick off as you work.</p>
+      <p>Each board below gets the full treatment: what it is and why it is built that way, what every
+      significant chip does <em>on this particular board</em>, the address and IO map, what the default
+      program actually does, and a set of things worth trying — including several that involve
+      deliberately breaking something to watch how it fails.</p>
+      <p class="tip"><strong>The experiments are the point.</strong> Reading that a floating TTL input
+      reads as logic 1 is one thing; deleting a wire, watching a board go dark, and finding the
+      explanation in the Checks tab is another. Most of the “try this” items take under a minute.</p></div><section id="blank" class="board" data-name="— blank board —">
+      <h2>— blank board —</h2>
+      <p class="one">An empty bench.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="51">
+  <img loading="lazy" src="shots/board-blank.jpg" alt="— blank board —">
+  <figcaption><b>— blank board —</b> — An empty bench.</figcaption>
+</figure></div>
+      <div class="story"><p>Nothing is placed and nothing is wired. This is where you find out how much of a
+    computer you can build from parts, and how much the tool will build for you.</p>
+    <p>The planner is watching from the first component you drop. It never interrupts with an offer
+    it cannot fulfil — until a design becomes possible, it only whispers in the hint bar.</p></div><h3>The program</h3><p>A single <code>hlt</code> at <code>org 0xE000</code> — a placeholder until you write
+    something.</p><h3>Try this</h3><ol class="tries">
+        <li><b>Watch the planner think</b><p>Place an <b>SRAM6264</b> on the empty canvas. Nothing pops up: memory with no CPU cannot
+      be wired to anything. Read the hint bar — <i>“place a CPU and I'll offer to wire the memory”</i>.
+      Now place an <b>8086</b>. Still no dialog, but the whisper changes: it now wants an 8284A. Place
+      the <b>8284A</b> and you finally get a dialog, because a design has become possible.</p></li><li><b>Build a working computer in four clicks</b><p>From that clock dialog, tick the CPU, choose <b>minimum mode</b>, and press <i>Wire
+      selected</i>. The instant the CPU has a clock, a second dialog appears offering to wire the RAM
+      too — accept it. The planner synthesizes the address latch, the decoder and the qualified
+      strobes. Press <kbd>Ctrl</kbd>+<kbd>Z</kbd> once and the entire batch disappears; press it again
+      and the clock goes too.</p></li><li><b>Make the planner create parts for you</b><p>On a board that already has a clocked CPU, place a bare <b>CRT</b> monitor. You will be
+      offered <i>“Add a Hercules card and cable this monitor”</i> — the video card does not exist yet,
+      so the planner creates it, wires it onto the full bus, and runs the sync and video leads across.
+      The same happens for a printer with no adapter, a keyboard with no shift register, and a speaker
+      with no timer.</p></li>
+      </ol></section><section id="logic-counter" class="board" data-name="logic lab: ripple counter">
+      <h2>Logic lab: ripple counter</h2>
+      <p class="one">A clock module, half a ripple counter, four LEDs — and no processor at all.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="52">
+  <img loading="lazy" src="shots/board-logic-counter.jpg" alt="Logic lab: ripple counter">
+  <figcaption><b>Logic lab: ripple counter</b> — A clock module, half a ripple counter, four LEDs — and no processor at all.</figcaption>
+</figure></div>
+      <div class="story"><p>The gentlest board in the set, and the only one with no CPU. A 2 Hz oscillator clocks
+    one half of a 74LS393 four-bit ripple counter, and its outputs drive four LEDs. That is the entire
+    design.</p>
+    <p>It exists to make one idea concrete before any processor appears: a clock edge changes state,
+    and state drives a display. Everything else in this tool is that idea repeated at scale.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>Y1 — OSC</td><td>OSC clock module, set to 2 Hz — the only thing on this board that moves on its own</td></tr><tr><td>U1 — 74LS393</td><td>74LS393 dual four-bit ripple counter; only the first half is used</td></tr><tr><td>D1 — LED8</td><td>LED bar showing QA…QD as a binary count</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="53">
+  <img loading="lazy" src="shots/board-logic-counter-osc.jpg" alt="Y1 — OSC">
+  <figcaption><b>Y1 — OSC</b> — OSC clock module, set to 2 Hz — the only thing on this board that moves on its own</figcaption>
+</figure>
+<figure class="shot" data-i="54">
+  <img loading="lazy" src="shots/board-logic-counter-74ls393.jpg" alt="U1 — 74LS393">
+  <figcaption><b>U1 — 74LS393</b> — 74LS393 dual four-bit ripple counter; only the first half is used</figcaption>
+</figure>
+<figure class="shot" data-i="55">
+  <img loading="lazy" src="shots/board-logic-counter-led8.jpg" alt="D1 — LED8">
+  <figcaption><b>D1 — LED8</b> — LED bar showing QA…QD as a binary count</figcaption>
+</figure></div><h3>The program</h3><p>None. There is no CPU to run one — the Code tab is unused on this board.</p><div class="grid">
+<figure class="shot" data-i="56">
+  <img loading="lazy" src="shots/board-logic-counter-running.jpg" alt="Logic lab: ripple counter — running">
+  <figcaption><b>Logic lab: ripple counter — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="57">
+  <img loading="lazy" src="shots/wave-logic-counter.jpg" alt="Logic lab: ripple counter — on the analyzer">
+  <figcaption><b>Logic lab: ripple counter — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Count in binary, slowly</b><p>Press <b>Start</b>. The LEDs count 0–15 and roll over. Because it is a <i>ripple</i>
+      counter, the bits do not change together: QA toggles on every clock, QB on every second, and so
+      on down the chain.</p></li><li><b>See the ripple in the analyzer</b><p>Add QA, QB, QC and QD to the waveform analyzer (<b>+ signal</b> → the counter → each
+      output). Zoom in on a rollover from 7 to 8 and you can see the propagation: QA falls, which
+      clocks QB, which falls and clocks QC. Real ripple counters glitch during that cascade, which is
+      exactly why synchronous counters exist.</p></li><li><b>Change time itself</b><p>Stop, double-click the oscillator, and set <code>hz</code> to 100. Restart: the low bit
+      is now a blur while QD still blinks visibly. The simulation's whole timebase follows the fastest
+      clock chip on the board, so this one change alters what a “half-step” means everywhere.</p></li><li><b>Break it on purpose</b><p>Stop and delete the wire from the counter's <code>1CLR</code> pin to GND. Run again and
+      open the <b>Checks</b> tab: a floating TTL input reads as logic 1, and an active-high clear held
+      high means the counter is permanently reset. The LEDs stay dark. This is the single most common
+      beginner's bug on real hardware, and here it explains itself.</p></li>
+      </ol></section><section id="min-8088" class="board" data-name="minimal 8088 kit">
+      <h2>Minimal 8088 kit</h2>
+      <p class="one">The classic single-board computer: 8284A, 8088, EPROM, SRAM, one latched output port.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="58">
+  <img loading="lazy" src="shots/board-min-8088.jpg" alt="Minimal 8088 kit">
+  <figcaption><b>Minimal 8088 kit</b> — The classic single-board computer: 8284A, 8088, EPROM, SRAM, one latched output port.</figcaption>
+</figure></div>
+      <div class="story"><p>This is the board every 1980s trainer kit was, reduced to its bones. An 8284A turns a
+    14.31818 MHz crystal into a 4.77 MHz clock, an 8088 runs from an EPROM, an SRAM holds the stack,
+    and a single '373 latch drives eight LEDs. Fifteen parts, and a complete computer.</p>
+    <p>The interesting part is the <b>partial address decoding</b>. There is no proper decoder: the ROM
+    is selected by <code>NAND(A19, memory-cycle)</code> and the RAM by its inverse. One address line
+    decides everything, so the ROM answers at <i>every</i> address with A19 high and the RAM at every
+    address with A19 low. That is not a simplification for teaching — it is what cheap kits actually
+    did, and the mirrors it creates are visible in the memory map.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U2 — 8088</td><td>8088 CPU in minimum mode — it drives ALE, ~RD, ~WR and IO/~M itself</td></tr><tr><td>U1 — 8284A</td><td>8284A clock generator: crystal ÷3 → CLK, plus a synchronized RESET and READY</td></tr><tr><td>U3 — 74LS373</td><td>74LS373 address latch — captures AD0-AD7 on ALE, the demultiplexer every 8088 board needs</td></tr><tr><td>U7 — EPROM2764</td><td>2764 EPROM holding the program and, at FFFF0, the far jump that starts the machine</td></tr><tr><td>U8 — SRAM6264</td><td>6264 SRAM: the stack and variables</td></tr><tr><td>U5 — 74LS00</td><td>74LS00 — the entire address decoder, one gate per chip select</td></tr><tr><td>U9 — 74LS373</td><td>74LS373 output port: latches on any IO write, drives the LEDs</td></tr><tr><td>D1 — LED8</td><td>Eight LEDs — the machine's only output</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="59">
+  <img loading="lazy" src="shots/board-min-8088-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 CPU in minimum mode — it drives ALE, ~RD, ~WR and IO/~M itself</figcaption>
+</figure>
+<figure class="shot" data-i="60">
+  <img loading="lazy" src="shots/board-min-8088-cg.jpg" alt="U1 — 8284A">
+  <figcaption><b>U1 — 8284A</b> — 8284A clock generator: crystal ÷3 → CLK, plus a synchronized RESET and READY</figcaption>
+</figure>
+<figure class="shot" data-i="61">
+  <img loading="lazy" src="shots/board-min-8088-lata.jpg" alt="U3 — 74LS373">
+  <figcaption><b>U3 — 74LS373</b> — 74LS373 address latch — captures AD0-AD7 on ALE, the demultiplexer every 8088 board needs</figcaption>
+</figure>
+<figure class="shot" data-i="62">
+  <img loading="lazy" src="shots/board-min-8088-rom.jpg" alt="U7 — EPROM2764">
+  <figcaption><b>U7 — EPROM2764</b> — 2764 EPROM holding the program and, at FFFF0, the far jump that starts the machine</figcaption>
+</figure>
+<figure class="shot" data-i="63">
+  <img loading="lazy" src="shots/board-min-8088-ram.jpg" alt="U8 — SRAM6264">
+  <figcaption><b>U8 — SRAM6264</b> — 6264 SRAM: the stack and variables</figcaption>
+</figure>
+<figure class="shot" data-i="64">
+  <img loading="lazy" src="shots/board-min-8088-nand.jpg" alt="U5 — 74LS00">
+  <figcaption><b>U5 — 74LS00</b> — 74LS00 — the entire address decoder, one gate per chip select</figcaption>
+</figure>
+<figure class="shot" data-i="65">
+  <img loading="lazy" src="shots/board-min-8088-port.jpg" alt="U9 — 74LS373">
+  <figcaption><b>U9 — 74LS373</b> — 74LS373 output port: latches on any IO write, drives the LEDs</figcaption>
+</figure>
+<figure class="shot" data-i="66">
+  <img loading="lazy" src="shots/board-min-8088-led.jpg" alt="D1 — LED8">
+  <figcaption><b>D1 — LED8</b> — Eight LEDs — the machine's only output</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Memory cycle, A19 = 1</td><td>EPROM 2764 (heavily mirrored: only A0-A12 are wired)</td></tr><tr><td>Memory cycle, A19 = 0</td><td>SRAM 6264 (also mirrored)</td></tr><tr><td>Any IO write</td><td>The '373 output port — there is no port address decoding at all</td></tr><tr><td>Reset vector FFFF0</td><td>Inside the ROM: a far jump to F000:E000</td></tr>
+        </tbody></table><h3>The program</h3><p>A blinker. It writes <code>55h</code> to the port, delays with a <code>LOOP</code>,
+    writes <code>AAh</code>, delays, and jumps back — so the LEDs alternate in a checkerboard.</p><pre class="code"><code>start:  mov al, 0x55
+        out 0x00, al       ; any OUT hits the port latch
+        mov cx, 4
+d1:     loop d1            ; short delay
+        mov al, 0xAA
+        out 0x00, al
+        mov cx, 4
+d2:     loop d2
+        jmp start</code></pre><div class="grid">
+<figure class="shot" data-i="67">
+  <img loading="lazy" src="shots/board-min-8088-running.jpg" alt="Minimal 8088 kit — running">
+  <figcaption><b>Minimal 8088 kit — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="68">
+  <img loading="lazy" src="shots/wave-min-8088.jpg" alt="Minimal 8088 kit — on the analyzer">
+  <figcaption><b>Minimal 8088 kit — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Watch one bus cycle assemble itself</b><p>Start, pause, then press <b>⭢ cycle</b> repeatedly while watching the analyzer. A memory
+      read takes four clocks: in T1 the address goes out on AD0-7 and ALE pulses high to latch it; in
+      T2 the CPU releases AD and drops <code>~RD</code>; in T3 the ROM drives data back; in T4 the CPU
+      samples it. Hover <code>ALE</code> during T1 and watch the '373 capture the low address byte.</p></li><li><b>Find the mirrors</b><p>Open <b>▦ memory</b> and read the range dropdown. The ROM does not appear once — it
+      appears many times, marked as aliases, because A13-A18 are not decoded at all. Your 8 KB EPROM
+      occupies half a megabyte of address space. Now you know why every kit manual said “the monitor
+      lives at F000 — and also at F800, and E000…”.</p></li><li><b>Prove the port has no address</b><p>Change <code>out 0x00, al</code> to <code>out 0x42, al</code> and re-assemble. The LEDs
+      blink exactly as before. The port latch is enabled by <code>IO/~M AND NOT ~WR</code> — every IO
+      write in the address space hits it. Add a '138 and gate the latch from one of its outputs if you
+      want a port that owns an address.</p></li><li><b>Break the demultiplexer</b><p>Stop and delete the wire from the CPU's <code>ALE</code> to the latch's <code>LE</code>.
+      Run: the machine dies immediately. Without ALE the latch never captures the low address byte, so
+      A0-A7 into ROM and RAM are frozen at whatever was last there — the CPU fetches the same byte
+      forever. Press <kbd>Ctrl</kbd>+<kbd>Z</kbd>, or use <b>⚡ complete</b>, which will notice the
+      missing connection and offer to restore it.</p></li><li><b>Watch the stack move</b><p>Double-click the SRAM while the program runs and scroll to the top of the chip. Every
+      <code>CALL</code> and interrupt pushes there. Add a <code>call</code> to the program and watch
+      the return address appear byte by byte.</p></li>
+      </ol><div class="grid hero1">
+<figure class="shot" data-i="69">
+  <img loading="lazy" src="shots/lab-min-8088.jpg" alt="Minimal 8088 kit — the guided lab">
+  <figcaption><b>Minimal 8088 kit — the guided lab</b> — This board ships a numbered exercise; the ticks persist as you work through it.</figcaption>
+</figure></div></section><section id="irq-lab" class="board" data-name="interrupt &amp; timer lab">
+      <h2>Interrupt &amp; timer lab</h2>
+      <p class="one">8259A and 8253 wired PC-style; the CPU sleeps in HLT and is woken by real interrupts.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="70">
+  <img loading="lazy" src="shots/board-irq-lab.jpg" alt="Interrupt &amp; timer lab">
+  <figcaption><b>Interrupt &amp; timer lab</b> — 8259A and 8253 wired PC-style; the CPU sleeps in HLT and is woken by real interrupts.</figcaption>
+</figure></div>
+      <div class="story"><p>Interrupts are the first thing that feels like magic, so this board makes them visible.
+    A 74LS138 carves the IO space into 32-port windows: the LED port at 00h, the 8259A interrupt
+    controller at 20h, and the 8253 timer at 40h — the same addresses the IBM PC used.</p>
+    <p>The timer's OUT0 goes to the controller's IR0, a button goes to IR1, and the controller's INT
+    goes to the CPU's INTR. The program spends its life in <code>HLT</code>. Everything that happens,
+    happens because a wire went high.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U2 — 8088</td><td>8088 — sits in HLT and wakes only for interrupts</td></tr><tr><td>U10 — 8259A</td><td>8259A interrupt controller at ports 20h/21h, master (~SP/~EN strapped high)</td></tr><tr><td>U11 — 8253</td><td>8253 timer at 40h-43h, channel 0 clocked from the 8284A's PCLK</td></tr><tr><td>U7 — 74LS138</td><td>74LS138 IO decoder on latched A5-A7 — eight 32-port windows</td></tr><tr><td>D3 — BTN</td><td>A push button on IR1, pulled up and inverted</td></tr><tr><td>D1 — LED8</td><td>The LED port at 00h, showing the interrupt count</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="71">
+  <img loading="lazy" src="shots/board-irq-lab-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 — sits in HLT and wakes only for interrupts</figcaption>
+</figure>
+<figure class="shot" data-i="72">
+  <img loading="lazy" src="shots/board-irq-lab-pic.jpg" alt="U10 — 8259A">
+  <figcaption><b>U10 — 8259A</b> — 8259A interrupt controller at ports 20h/21h, master (~SP/~EN strapped high)</figcaption>
+</figure>
+<figure class="shot" data-i="73">
+  <img loading="lazy" src="shots/board-irq-lab-pit.jpg" alt="U11 — 8253">
+  <figcaption><b>U11 — 8253</b> — 8253 timer at 40h-43h, channel 0 clocked from the 8284A's PCLK</figcaption>
+</figure>
+<figure class="shot" data-i="74">
+  <img loading="lazy" src="shots/board-irq-lab-io138.jpg" alt="U7 — 74LS138">
+  <figcaption><b>U7 — 74LS138</b> — 74LS138 IO decoder on latched A5-A7 — eight 32-port windows</figcaption>
+</figure>
+<figure class="shot" data-i="75">
+  <img loading="lazy" src="shots/board-irq-lab-btnir.jpg" alt="D3 — BTN">
+  <figcaption><b>D3 — BTN</b> — A push button on IR1, pulled up and inverted</figcaption>
+</figure>
+<figure class="shot" data-i="76">
+  <img loading="lazy" src="shots/board-irq-lab-led.jpg" alt="D1 — LED8">
+  <figcaption><b>D1 — LED8</b> — The LED port at 00h, showing the interrupt count</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Ports 00h-1Fh</td><td>Y0 → LED output latch</td></tr><tr><td>Ports 20h-3Fh</td><td>Y1 → 8259A (A0 from latched Q0, so 20h and 21h)</td></tr><tr><td>Ports 40h-5Fh</td><td>Y2 → 8253 (A0/A1 latched, so 40h-43h)</td></tr><tr><td>IR0</td><td>8253 OUT0 — the timer tick</td></tr><tr><td>IR1</td><td>The push button, through an inverter</td></tr><tr><td>INTR / ~INTA</td><td>8259A INT → CPU INTR; CPU ~INTA → 8259A</td></tr>
+        </tbody></table><h3>The program</h3><p>It installs handlers for vectors 8 and 9, initializes the 8259A with the PC's own ICW
+    sequence (base vector 08h), programs timer channel 0 as a mode-3 square wave with divisor 512,
+    unmasks IR0 and IR1, enables interrupts, and then does nothing but <code>hlt</code>. The timer
+    handler increments BX and shows the low byte on the LEDs; the button handler flashes all eight.</p><pre class="code"><code>        mov al, 0x13       ; ICW1: edge, single, ICW4 needed
+        out 0x20, al
+        mov al, 0x08       ; ICW2: vectors 08-0F
+        out 0x21, al
+        mov al, 0x01       ; ICW4: 8086 mode
+        out 0x21, al
+        mov al, 0xFC       ; unmask IR0 and IR1
+        out 0x21, al
+        sti
+idle:   hlt
+        jmp idle</code></pre><div class="grid">
+<figure class="shot" data-i="77">
+  <img loading="lazy" src="shots/board-irq-lab-running.jpg" alt="Interrupt &amp; timer lab — running">
+  <figcaption><b>Interrupt &amp; timer lab — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="78">
+  <img loading="lazy" src="shots/wave-irq-lab.jpg" alt="Interrupt &amp; timer lab — on the analyzer">
+  <figcaption><b>Interrupt &amp; timer lab — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>See the two-pulse INTA handshake</b><p>The analyzer already shows INTR and ~INTA on this board. Run for a moment, pause, and
+      zoom in on an interrupt. INTR rises; the CPU finishes its instruction and answers with
+      <i>two</i> ~INTA pulses. During the second, the 8259A puts the vector number on AD0-7 — read it
+      off the bus lane. That byte times four is the address the CPU jumps through.</p></li><li><b>Mask an interrupt while it is running</b><p>Pause and double-click the 8259A. In the IMR grid, set bit 0. Resume: the LEDs stop
+      counting because the timer's request is now blocked — but watch the IRR grid, where bit 0 keeps
+      lighting up. The request is arriving; the controller is refusing to forward it. Clear the bit and
+      the count resumes mid-stride.</p></li><li><b>Prove the CPU is genuinely asleep</b><p>Open the <b>CPU</b> tab while it runs. IP is parked on the <code>hlt</code> and the bus
+      shows <i>HALT (waiting for interrupt)</i>. The 8088 is not spinning in a loop — it has stopped
+      fetching entirely, and only an interrupt restarts it. Press the IR1 button and watch IP leap
+      into the handler and come back.</p></li><li><b>Forget the EOI</b><p>Delete the two lines that write <code>20h</code> to port 20h at the end of the timer
+      handler, and re-assemble. The board runs exactly once and then goes quiet forever: without an
+      end-of-interrupt the 8259A believes IR0 is still in service and will not deliver another request
+      at that level or below. Double-click it and you can see the ISR bit stuck on.</p></li><li><b>Change the tick rate</b><p>Pause, double-click the 8253, and change counter 0's reload value. Resume: the LED count
+      speeds up or slows down immediately. The timer is a divider — <code>1.193 MHz ÷ reload</code> —
+      which is exactly how the PC produced its 18.2 Hz tick.</p></li>
+      </ol><div class="grid hero1">
+<figure class="shot" data-i="79">
+  <img loading="lazy" src="shots/lab-irq-lab.jpg" alt="Interrupt &amp; timer lab — the guided lab">
+  <figcaption><b>Interrupt &amp; timer lab — the guided lab</b> — This board ships a numbered exercise; the ticks persist as you work through it.</figcaption>
+</figure></div></section><section id="max-8088" class="board" data-name="max-mode 8088 + 8288">
+      <h2>Max-mode 8088 + 8288</h2>
+      <p class="one">MN/~MX strapped low: an 8288 decodes the CPU's status lines into separate command strobes.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="80">
+  <img loading="lazy" src="shots/board-max-8088.jpg" alt="Max-mode 8088 + 8288">
+  <figcaption><b>Max-mode 8088 + 8288</b> — MN/~MX strapped low: an 8288 decodes the CPU's status lines into separate command strobes.</figcaption>
+</figure></div>
+      <div class="story"><p>The same blinker as the minimal kit, with the bus plumbing rebuilt. Strapping
+    <code>MN/~MX</code> to ground changes what eight of the CPU's pins mean: instead of driving ALE,
+    <code>~RD</code>, <code>~WR</code> and <code>IO/~M</code> itself, the 8088 emits a three-bit status
+    code on <code>~S2..~S0</code> and lets an <b>8288 bus controller</b> decode it.</p>
+    <p>The payoff is separate memory and IO commands — <code>~MRDC</code>, <code>~MWTC</code>,
+    <code>~IORC</code>, <code>~IOWC</code> — so no gate is needed to qualify a read as memory or IO.
+    The cost is a chip. Notice that the canvas relabels the CPU's pins the moment the strap is in
+    place: the tool draws what the pins actually <i>mean</i>.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U2 — 8088</td><td>8088 with MN/~MX tied low — its pins now carry status, not commands</td></tr><tr><td>U3 — 8288</td><td>8288 bus controller: decodes ~S2..~S0 into ALE and four command strobes</td></tr><tr><td>U4 — 74LS373</td><td>74LS373 latch — now clocked by the 8288's ALE, not the CPU's</td></tr><tr><td>U6 — EPROM2764</td><td>2764 EPROM, selected by A19 alone (no IO/~M gating needed)</td></tr><tr><td>U7 — SRAM6264</td><td>6264 SRAM at A19 = 0</td></tr><tr><td>U8 — 74LS373</td><td>The output port, latched by ~IOWC through an inverter</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="81">
+  <img loading="lazy" src="shots/board-max-8088-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 with MN/~MX tied low — its pins now carry status, not commands</figcaption>
+</figure>
+<figure class="shot" data-i="82">
+  <img loading="lazy" src="shots/board-max-8088-busctl.jpg" alt="U3 — 8288">
+  <figcaption><b>U3 — 8288</b> — 8288 bus controller: decodes ~S2..~S0 into ALE and four command strobes</figcaption>
+</figure>
+<figure class="shot" data-i="83">
+  <img loading="lazy" src="shots/board-max-8088-lata.jpg" alt="U4 — 74LS373">
+  <figcaption><b>U4 — 74LS373</b> — 74LS373 latch — now clocked by the 8288's ALE, not the CPU's</figcaption>
+</figure>
+<figure class="shot" data-i="84">
+  <img loading="lazy" src="shots/board-max-8088-rom.jpg" alt="U6 — EPROM2764">
+  <figcaption><b>U6 — EPROM2764</b> — 2764 EPROM, selected by A19 alone (no IO/~M gating needed)</figcaption>
+</figure>
+<figure class="shot" data-i="85">
+  <img loading="lazy" src="shots/board-max-8088-ram.jpg" alt="U7 — SRAM6264">
+  <figcaption><b>U7 — SRAM6264</b> — 6264 SRAM at A19 = 0</figcaption>
+</figure>
+<figure class="shot" data-i="86">
+  <img loading="lazy" src="shots/board-max-8088-port.jpg" alt="U8 — 74LS373">
+  <figcaption><b>U8 — 74LS373</b> — The output port, latched by ~IOWC through an inverter</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Memory read</td><td>~MRDC → ROM ~OE and RAM ~OE</td></tr><tr><td>Memory write</td><td>~MWTC → RAM ~WE</td></tr><tr><td>IO write</td><td>~IOWC → the output port latch</td></tr><tr><td>Chip selects</td><td>ROM at A19 = 1, RAM at A19 = 0 — no cycle-type gating, the commands separate them</td></tr>
+        </tbody></table><h3>The program</h3><p>Identical to the minimal kit's blinker. That is the point: the same software, entirely
+    different bus hardware.</p><div class="grid">
+<figure class="shot" data-i="87">
+  <img loading="lazy" src="shots/board-max-8088-running.jpg" alt="Max-mode 8088 + 8288 — running">
+  <figcaption><b>Max-mode 8088 + 8288 — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="88">
+  <img loading="lazy" src="shots/wave-max-8088.jpg" alt="Max-mode 8088 + 8288 — on the analyzer">
+  <figcaption><b>Max-mode 8088 + 8288 — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Read the status code</b><p>Add <code>~S0</code>, <code>~S1</code> and <code>~S2</code> to the analyzer and step by
+      cycle. The three bits together name the cycle: 100 is a code fetch, 101 a memory read, 110 a
+      memory write, 010 an IO write, 111 passive. The 8288 is a decoder watching those three wires.</p></li><li><b>Compare the two boards side by side</b><p>Put <code>ALE</code> and <code>~MRDC</code> on screen here, then load <i>Minimal 8088
+      kit</i> and put <code>ALE</code> and <code>~RD</code> on screen there. Same program, same
+      timing, different origin: on the minimal kit those pulses come out of the CPU, here they come out
+      of the controller one gate delay later.</p></li><li><b>Pull the strap</b><p>Stop, delete the wire from <code>MN/~MX</code> to GND, and re-run. The CPU is now in
+      minimum mode and drives min-mode signals from those pins, but the board is still listening to the
+      8288 — which sees garbage status and issues nothing. The machine is silent. Watch the canvas
+      relabel the pins the instant the strap disappears.</p></li><li><b>See why max mode exists</b><p>Open the <b>Dual 8088</b> board. Two processors share one memory, which is only possible
+      because max mode also gives you <code>~LOCK</code> and lets an 8289 arbiter gate the commands.
+      Max mode is not about convenience — it is what makes a multi-master bus possible.</p></li>
+      </ol></section><section id="word-8086" class="board" data-name="8086 word machine (byte lanes)">
+      <h2>8086 word machine (byte lanes)</h2>
+      <p class="one">A true 16-bit bus: two byte banks, ~BHE and A0 deciding which one is written.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="89">
+  <img loading="lazy" src="shots/board-word-8086.jpg" alt="8086 word machine (byte lanes)">
+  <figcaption><b>8086 word machine (byte lanes)</b> — A true 16-bit bus: two byte banks, ~BHE and A0 deciding which one is written.</figcaption>
+</figure></div>
+      <div class="story"><p>The 8086 moves sixteen bits at once, which forces a question the 8088 never has to
+    answer: when the program writes a single byte, which half of memory should be enabled? The answer
+    is two banks — even addresses on D0-D7, odd on D8-D15 — with the write to each bank gated
+    separately.</p>
+    <p>Here <code>~WE</code> on the low bank is <code>~WR OR A0</code>, and on the high bank it is
+    <code>~WR OR ~BHE</code>. Address bit 0 never reaches the memories at all: the banks are addressed
+    by A1 upward, because each holds every <i>other</i> byte.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U2 — 8086</td><td>8086 in minimum mode — sixteen multiplexed AD lines and a ~BHE pin</td></tr><tr><td>U3 — 74LS373</td><td>74LS373 latching AD0-AD7</td></tr><tr><td>U4 — 74LS373</td><td>74LS373 latching AD8-AD15 — an 8086 needs two</td></tr><tr><td>U10 — SRAM6264</td><td>Low bank: even addresses, wired to D0-D7</td></tr><tr><td>U11 — SRAM6264</td><td>High bank: odd addresses, wired to D8-D15</td></tr><tr><td>U6 — 74LS32</td><td>74LS32 gates producing the per-bank write enables from ~WR, A0 and ~BHE</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="90">
+  <img loading="lazy" src="shots/board-word-8086-cpu.jpg" alt="U2 — 8086">
+  <figcaption><b>U2 — 8086</b> — 8086 in minimum mode — sixteen multiplexed AD lines and a ~BHE pin</figcaption>
+</figure>
+<figure class="shot" data-i="91">
+  <img loading="lazy" src="shots/board-word-8086-lat0.jpg" alt="U3 — 74LS373">
+  <figcaption><b>U3 — 74LS373</b> — 74LS373 latching AD0-AD7</figcaption>
+</figure>
+<figure class="shot" data-i="92">
+  <img loading="lazy" src="shots/board-word-8086-lat1.jpg" alt="U4 — 74LS373">
+  <figcaption><b>U4 — 74LS373</b> — 74LS373 latching AD8-AD15 — an 8086 needs two</figcaption>
+</figure>
+<figure class="shot" data-i="93">
+  <img loading="lazy" src="shots/board-word-8086-raml.jpg" alt="U10 — SRAM6264">
+  <figcaption><b>U10 — SRAM6264</b> — Low bank: even addresses, wired to D0-D7</figcaption>
+</figure>
+<figure class="shot" data-i="94">
+  <img loading="lazy" src="shots/board-word-8086-ramh.jpg" alt="U11 — SRAM6264">
+  <figcaption><b>U11 — SRAM6264</b> — High bank: odd addresses, wired to D8-D15</figcaption>
+</figure>
+<figure class="shot" data-i="95">
+  <img loading="lazy" src="shots/board-word-8086-or32.jpg" alt="U6 — 74LS32">
+  <figcaption><b>U6 — 74LS32</b> — 74LS32 gates producing the per-bank write enables from ~WR, A0 and ~BHE</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Even byte</td><td>A0 = 0, ~BHE = 1 → low bank only</td></tr><tr><td>Odd byte</td><td>A0 = 1, ~BHE = 0 → high bank only</td></tr><tr><td>Aligned word</td><td>A0 = 0, ~BHE = 0 → both banks, one bus cycle</td></tr><tr><td>Chip addressing</td><td>Chip A0 ← system A1, and so on — the banks never see A0</td></tr>
+        </tbody></table><h3>The program</h3><p>It writes an aligned word to <code>[0x100]</code>, then a misaligned word to
+    <code>[0x103]</code>, then runs the usual blinker. Those two stores are the whole lesson.</p><pre class="code"><code>        mov word [0x100], 0x1234   ; aligned: ONE bus cycle
+        mov word [0x103], 0x5678   ; odd: TWO byte cycles</code></pre><div class="grid">
+<figure class="shot" data-i="96">
+  <img loading="lazy" src="shots/board-word-8086-running.jpg" alt="8086 word machine (byte lanes) — running">
+  <figcaption><b>8086 word machine (byte lanes) — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="97">
+  <img loading="lazy" src="shots/wave-word-8086.jpg" alt="8086 word machine (byte lanes) — on the analyzer">
+  <figcaption><b>8086 word machine (byte lanes) — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Count the cycles for yourself</b><p>Put <code>ALE</code> and <code>~WR</code> on the analyzer, then step by instruction over
+      those two stores. The aligned word produces one ALE pulse and one write. The misaligned word
+      produces <i>two</i> — the 8086 splits it into a byte to the high bank and a byte to the low bank
+      of the next word. That is the entire performance argument for alignment, visible on a wire.</p></li><li><b>Watch ~BHE do its job</b><p>Add <code>~BHE</code> and <code>A0</code> (from the latch) to the analyzer. During a byte
+      write to an even address, ~BHE stays high and only the low bank's ~WE goes active. Hover the high
+      bank's <code>~WE</code> pin during that cycle: it never drops. Without that gating, a byte write
+      would corrupt its neighbour.</p></li><li><b>Corrupt memory on purpose</b><p>Stop and delete the wire feeding <code>~BHE</code> into its OR gate. That input now floats
+      high, which permanently blocks the high bank's writes — odd bytes vanish. Or wire the gate's
+      input to ground instead and both banks write on every cycle: now every byte store also destroys
+      the byte beside it. Check the result in the unified memory view.</p></li><li><b>See the fetch pattern</b><p>The 8086 prefetches whole words at even addresses only. Watch the AD bus lane during
+      instruction fetches — you will see two-byte reads at even addresses, which is why its queue is
+      six bytes deep while the 8088's is four.</p></li>
+      </ol></section><section id="hgc-8088" class="board" data-name="hercules video kit">
+      <h2>Hercules video kit</h2>
+      <p class="one">An 8088 writing characters straight into video memory, with the picture live on the board.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="98">
+  <img loading="lazy" src="shots/board-hgc-8088.jpg" alt="Hercules video kit">
+  <figcaption><b>Hercules video kit</b> — An 8088 writing characters straight into video memory, with the picture live on the board.</figcaption>
+</figure></div>
+      <div class="story"><p>No BIOS, no operating system, no driver. The Hercules card owns 32 KB of memory at
+    B0000 and a handful of ports at 3B4-3BF, and the program simply stores bytes there. Character,
+    attribute, character, attribute — the card scans that memory and turns it into video.</p>
+    <p>This board also shows what an “ISA-style” bus looks like on a kit. The card wants separate
+    <code>~MEMR</code>, <code>~MEMW</code>, <code>~IOR</code> and <code>~IOW</code>, so four OR gates
+    qualify the CPU's <code>~RD</code> and <code>~WR</code> with <code>IO/~M</code> — the cheapest
+    possible way to synthesize a card bus from a minimum-mode CPU.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>D1 — HGC</td><td>Hercules card: 32 KB of video RAM at B0000, a 6845-style CRTC, real HSYNC/VSYNC/VIDEO outputs</td></tr><tr><td>D2 — CRT</td><td>The monochrome monitor — double-click it for a full phosphor screen</td></tr><tr><td>U6 — 74LS32</td><td>74LS32: four gates turning ~RD/~WR plus IO/~M into the card's four command strobes</td></tr><tr><td>U5 — 74LS138</td><td>74LS138 on A17-A19 — a proper decoder, because the video window must not collide with ROM</td></tr><tr><td>U2 — 8088</td><td>8088 driving the whole address bus into the card: A0-A7 latched, A8-A19 direct</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="99">
+  <img loading="lazy" src="shots/board-hgc-8088-hgc.jpg" alt="D1 — HGC">
+  <figcaption><b>D1 — HGC</b> — Hercules card: 32 KB of video RAM at B0000, a 6845-style CRTC, real HSYNC/VSYNC/VIDEO outputs</figcaption>
+</figure>
+<figure class="shot" data-i="100">
+  <img loading="lazy" src="shots/board-hgc-8088-crt.jpg" alt="D2 — CRT">
+  <figcaption><b>D2 — CRT</b> — The monochrome monitor — double-click it for a full phosphor screen</figcaption>
+</figure>
+<figure class="shot" data-i="101">
+  <img loading="lazy" src="shots/board-hgc-8088-or32.jpg" alt="U6 — 74LS32">
+  <figcaption><b>U6 — 74LS32</b> — 74LS32: four gates turning ~RD/~WR plus IO/~M into the card's four command strobes</figcaption>
+</figure>
+<figure class="shot" data-i="102">
+  <img loading="lazy" src="shots/board-hgc-8088-dec.jpg" alt="U5 — 74LS138">
+  <figcaption><b>U5 — 74LS138</b> — 74LS138 on A17-A19 — a proper decoder, because the video window must not collide with ROM</figcaption>
+</figure>
+<figure class="shot" data-i="103">
+  <img loading="lazy" src="shots/board-hgc-8088-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 driving the whole address bus into the card: A0-A7 latched, A8-A19 direct</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>B0000-B7FFF</td><td>Video RAM, self-decoded by the card</td></tr><tr><td>Ports 3B4/3B5</td><td>CRTC index and data registers</td></tr><tr><td>Port 3B8</td><td>Mode register — video enable, graphics/text, blink</td></tr><tr><td>00000-1FFFF (Y0)</td><td>SRAM</td></tr><tr><td>E0000-FFFFF (Y7)</td><td>EPROM</td></tr>
+        </tbody></table><h3>The program</h3><p>It points ES at B000, walks a string with <code>lodsb</code>/<code>stosb</code> writing
+    each character followed by attribute 07h, then sits in a loop incrementing one character in place
+    with a bright attribute so you can see the machine is still alive.</p><pre class="code"><code>        mov ax, 0xB000
+        mov es, ax
+        ...
+        lodsb              ; character
+        stosb
+        mov al, 0x07       ; attribute
+        stosb</code></pre><div class="grid">
+<figure class="shot" data-i="104">
+  <img loading="lazy" src="shots/board-hgc-8088-running.jpg" alt="Hercules video kit — running">
+  <figcaption><b>Hercules video kit — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="105">
+  <img loading="lazy" src="shots/wave-hgc-8088.jpg" alt="Hercules video kit — on the analyzer">
+  <figcaption><b>Hercules video kit — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Write to the screen by hand</b><p>Run the board, then open <b>▦ memory</b> and go to <code>B0000</code>. Type a byte — say
+      <code>41</code> — into the first cell. The letter A appears on the monitor immediately. The next
+      byte is its attribute: try <code>0F</code> for bright, <code>70</code> for reverse video,
+      <code>01</code> for underline.</p></li><li><b>Turn the video off from the port</b><p>Pause and double-click the HGC. Clear bit 3 of the mode register (3B8) and resume: the
+      screen goes black although the memory still holds the text. Set it again and the picture returns
+      untouched. That bit is a blanking control, not a clear.</p></li><li><b>Watch the scan</b><p>Add <code>HSYNC</code> and <code>VSYNC</code> to the analyzer. HSYNC is the line rate;
+      VSYNC pulses once per frame, and between them the card is walking the frame buffer. Zoom out and
+      the frame structure appears as a clean repeating envelope.</p></li><li><b>Cut one strobe</b><p>Stop and delete the wire into the card's <code>~MEMW</code>. Run again: the program's
+      stores go nowhere and the screen never fills, but the CPU runs happily — it has no idea its
+      writes are being ignored. This is exactly the failure mode that used to eat afternoons with a
+      scope, and it takes about ten seconds to find here by hovering the pin.</p></li><li><b>Draw with the attribute byte</b><p>Change the program's attribute from <code>0x07</code> to <code>0x70</code> and
+      re-assemble. The whole message becomes reverse video. Attributes are per character cell — the
+      entire text-mode colour model of the PC in one byte.</p></li>
+      </ol></section><section id="kbd-8088" class="board" data-name="pc typewriter (keyboard + video)">
+      <h2>PC typewriter (keyboard + video)</h2>
+      <p class="one">Scancodes travel a serial line, shift into a register, raise IRQ1, and land on screen.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="106">
+  <img loading="lazy" src="shots/board-kbd-8088.jpg" alt="PC typewriter (keyboard + video)">
+  <figcaption><b>PC typewriter (keyboard + video)</b> — Scancodes travel a serial line, shift into a register, raise IRQ1, and land on screen.</figcaption>
+</figure></div>
+      <div class="story"><p>The XT keyboard protocol is beautifully primitive: the keyboard drives a clock and a data
+    line, and the machine shifts eight bits in. There is no controller chip in the modern sense — just
+    a shift register and an interrupt.</p>
+    <p>Here the keyboard's KDATA and KCLK feed a '322-style shift register; when eight bits have
+    arrived it asserts FULL, which is wired to IR1 on the 8259A. The handler reads the assembled byte
+    from the 8255's port A at 60h, acknowledges by pulsing PB7 to clear the register, translates the
+    scancode, and writes a character into video memory.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>D2 — XTKBD</td><td>The XT keyboard itself — type on your real keyboard and these keys depress</td></tr><tr><td>D1 — KBDSHIFT</td><td>Shift register: eight serial bits in, a parallel byte out, FULL when ready</td></tr><tr><td>U11 — 8255</td><td>8255 at 60h — port A reads the scancode, PB7 acknowledges it</td></tr><tr><td>U10 — 8259A</td><td>8259A: FULL arrives on IR1, the PC's keyboard interrupt</td></tr><tr><td>D3 — HGC</td><td>Hercules card — where the typed characters end up</td></tr><tr><td>D4 — CRT</td><td>The monitor; double-click it to get the on-screen keyboard too</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="107">
+  <img loading="lazy" src="shots/board-kbd-8088-kbd.jpg" alt="D2 — XTKBD">
+  <figcaption><b>D2 — XTKBD</b> — The XT keyboard itself — type on your real keyboard and these keys depress</figcaption>
+</figure>
+<figure class="shot" data-i="108">
+  <img loading="lazy" src="shots/board-kbd-8088-kbshift.jpg" alt="D1 — KBDSHIFT">
+  <figcaption><b>D1 — KBDSHIFT</b> — Shift register: eight serial bits in, a parallel byte out, FULL when ready</figcaption>
+</figure>
+<figure class="shot" data-i="109">
+  <img loading="lazy" src="shots/board-kbd-8088-ppi.jpg" alt="U11 — 8255">
+  <figcaption><b>U11 — 8255</b> — 8255 at 60h — port A reads the scancode, PB7 acknowledges it</figcaption>
+</figure>
+<figure class="shot" data-i="110">
+  <img loading="lazy" src="shots/board-kbd-8088-pic.jpg" alt="U10 — 8259A">
+  <figcaption><b>U10 — 8259A</b> — 8259A: FULL arrives on IR1, the PC's keyboard interrupt</figcaption>
+</figure>
+<figure class="shot" data-i="111">
+  <img loading="lazy" src="shots/board-kbd-8088-hgc.jpg" alt="D3 — HGC">
+  <figcaption><b>D3 — HGC</b> — Hercules card — where the typed characters end up</figcaption>
+</figure>
+<figure class="shot" data-i="112">
+  <img loading="lazy" src="shots/board-kbd-8088-crt.jpg" alt="D4 — CRT">
+  <figcaption><b>D4 — CRT</b> — The monitor; double-click it to get the on-screen keyboard too</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Ports 20h/21h</td><td>8259A</td></tr><tr><td>Ports 60h-63h</td><td>8255 — 60h port A (scancode), 61h port B (PB7 = acknowledge), 63h control</td></tr><tr><td>IR1</td><td>Shift register FULL</td></tr><tr><td>B0000</td><td>Video RAM</td></tr>
+        </tbody></table><h3>The program</h3><p>It initializes the 8259A and the 8255, unmasks only IR1, prints a banner, and halts.
+    Everything after that happens in the interrupt handler: read 60h, pulse the acknowledge, ignore
+    break codes (bit 7 set), translate through a scancode table, write character plus attribute to
+    video memory, advance the cursor, and handle Return by rounding up to the next row.</p><pre class="code"><code>kb_isr: in  al, 0x60      ; the assembled scancode
+        mov al, 0x80
+        out 0x61, al      ; pulse PB7 to clear the shift register
+        xor al, al
+        out 0x61, al</code></pre><div class="grid">
+<figure class="shot" data-i="113">
+  <img loading="lazy" src="shots/board-kbd-8088-running.jpg" alt="PC typewriter (keyboard + video) — running">
+  <figcaption><b>PC typewriter (keyboard + video) — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="114">
+  <img loading="lazy" src="shots/wave-kbd-8088.jpg" alt="PC typewriter (keyboard + video) — on the analyzer">
+  <figcaption><b>PC typewriter (keyboard + video) — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Watch a keystroke bit by bit</b><p>Add <code>KCLK</code> and <code>KDATA</code> to the analyzer, run the board, and press one
+      key. Zoom in: eight clock pulses, with data valid on each. You are looking at a single scancode
+      crossing a wire one bit at a time, at roughly 16 kHz.</p></li><li><b>Type on the real thing</b><p>Double-click the monitor. The CRT window opens with an on-screen XT keyboard docked
+      beneath it, and physical typing is captured too. Watch the keys depress on the schematic symbol
+      as you type — the drawing is live.</p></li><li><b>Forget to acknowledge</b><p>Delete the two <code>out 0x61</code> instructions from the handler and re-assemble. The
+      first keystroke works; the second never arrives. The shift register is still full, so it will not
+      accept another byte and FULL never falls, so IR1 never edges again. One missing pulse, one dead
+      keyboard.</p></li><li><b>Read the scancode table</b><p>Scancodes are positional, not alphabetical: Q is 10h because of where it sits on the
+      keyboard. Find <code>sctab</code> in the program — that is the translation table every PC BIOS
+      has carried since 1981.</p></li>
+      </ol></section><section id="uart-lab" class="board" data-name="serial console (8250 uart)">
+      <h2>Serial console (8250 UART)</h2>
+      <p class="one">Polled serial IO exactly as a BIOS did it: check the status bit, then move a byte.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="115">
+  <img loading="lazy" src="shots/board-uart-lab.jpg" alt="Serial console (8250 UART)">
+  <figcaption><b>Serial console (8250 UART)</b> — Polled serial IO exactly as a BIOS did it: check the status bit, then move a byte.</figcaption>
+</figure></div>
+      <div class="story"><p>An 8250 UART card sits at 3F8h and decodes itself, so the board needs no IO decoder at
+    all — only gates to qualify the CPU's read and write strobes as IO cycles. Everything else is
+    software.</p>
+    <p>The program never uses an interrupt. It polls the Line Status Register: bit 5 says the
+    transmitter is empty, bit 0 says a byte has arrived. That is how <code>INT 14h</code> worked, and
+    it is the simplest correct way to drive a serial port.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>D1 — COM8250</td><td>8250 UART, self-decoding at 3F8h-3FFh, with a live terminal behind a double-click</td></tr><tr><td>U6 — 74LS32</td><td>74LS32 qualifying ~RD/~WR into ~IOR/~IOW for the card</td></tr><tr><td>U2 — 8088</td><td>8088 — full A0-A9 into the card so it can decode its own address</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="116">
+  <img loading="lazy" src="shots/board-uart-lab-com.jpg" alt="D1 — COM8250">
+  <figcaption><b>D1 — COM8250</b> — 8250 UART, self-decoding at 3F8h-3FFh, with a live terminal behind a double-click</figcaption>
+</figure>
+<figure class="shot" data-i="117">
+  <img loading="lazy" src="shots/board-uart-lab-or32.jpg" alt="U6 — 74LS32">
+  <figcaption><b>U6 — 74LS32</b> — 74LS32 qualifying ~RD/~WR into ~IOR/~IOW for the card</figcaption>
+</figure>
+<figure class="shot" data-i="118">
+  <img loading="lazy" src="shots/board-uart-lab-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 — full A0-A9 into the card so it can decode its own address</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>3F8h</td><td>Data register (or divisor low, when DLAB is set)</td></tr><tr><td>3F9h</td><td>Interrupt enable (or divisor high)</td></tr><tr><td>3FBh</td><td>Line control — 8N1, and the DLAB bit</td></tr><tr><td>3FDh</td><td>Line status — bit 5 transmit empty, bit 0 data ready</td></tr>
+        </tbody></table><h3>The program</h3><p>It sets DLAB, writes divisor 12 for 9600 baud, clears DLAB with 8N1, prints a banner,
+    then echoes forever: poll for a received byte, send it back, and add a line feed after a carriage
+    return.</p><pre class="code"><code>putc:   mov dx, 0x3FD
+w1:     in  al, dx
+        test al, 0x20      ; transmitter empty?
+        jz  w1
+        mov dx, 0x3F8
+        out dx, al
+        ret</code></pre><div class="grid">
+<figure class="shot" data-i="119">
+  <img loading="lazy" src="shots/board-uart-lab-running.jpg" alt="Serial console (8250 UART) — running">
+  <figcaption><b>Serial console (8250 UART) — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="120">
+  <img loading="lazy" src="shots/wave-uart-lab.jpg" alt="Serial console (8250 UART) — on the analyzer">
+  <figcaption><b>Serial console (8250 UART) — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Talk to it</b><p>Run the board and double-click the COM card. A green phosphor terminal opens with the
+      banner already printed. Type: the 8088 is polling, sees your byte, and echoes it. You are the
+      other end of a serial cable.</p></li><li><b>Change the baud rate mid-flight</b><p>Pause, double-click the UART, and change the baud divisor. The programmer's view shows the
+      resulting rate — <code>1843200 ÷ (16 × divisor)</code>. Divisor 12 gives 9600; try 96 for 1200.
+      Nothing else on the board changes.</p></li><li><b>Remove the polling</b><p>Delete the <code>test al, 0x20</code> / <code>jz</code> pair so the program writes without
+      waiting. It still appears to work here, because the model's transmitter is always ready — which
+      is a good moment to notice that a simulator can be kinder than hardware. On a real 8250 at 1200
+      baud, that loop is the only thing preventing dropped characters.</p></li><li><b>Watch an IO cycle</b><p>Add <code>~IOR</code> and <code>~IOW</code> (the gate outputs) to the analyzer. Every
+      poll of the status register is a full bus cycle — you can literally count how much of the CPU's
+      life is spent asking “are you ready yet?”. That is the argument for interrupts, in picture form.</p></li>
+      </ol></section><section id="pc-xt" class="board" data-name="pc/xt — boots freedos">
+      <h2>PC/XT — boots FreeDOS</h2>
+      <p class="one">A complete XT-class machine, wired chip by chip, that POSTs and boots FreeDOS.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="121">
+  <img loading="lazy" src="shots/board-pc-xt.jpg" alt="PC/XT — boots FreeDOS">
+  <figcaption><b>PC/XT — boots FreeDOS</b> — A complete XT-class machine, wired chip by chip, that POSTs and boots FreeDOS.</figcaption>
+</figure></div>
+      <div class="story"><p>This is the whole thing: an 8088, DMA controller, interrupt controller, timer, PPI,
+    floppy controller, XT-IDE fixed disk, serial port, Hercules video, keyboard and speaker — thirty
+    parts on one canvas, wired the way IBM wired them. GLaBIOS runs from the EPROM, POSTs the machine,
+    reads the boot sector over DMA channel 2, and FreeDOS 1.3 comes up on the phosphor.</p>
+    <p>Nothing here is a shortcut. The floppy controller really moves sectors through the 8237's
+    channel 2. The keyboard really shifts bits. The POST beep really comes from timer channel 2 gated
+    by a PPI bit through an AND gate into the speaker. If you can find it in a technical reference
+    manual, it is on this canvas.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U2 — 8088</td><td>8088 at 4.77 MHz — the machine's whole reason for existing</td></tr><tr><td>U12 — 8237A</td><td>8237A DMA controller at 00h; page registers at 80h, where POST codes appear</td></tr><tr><td>U13 — 8259A</td><td>8259A at 20h — IRQ0 timer, IRQ1 keyboard, IRQ4 serial, IRQ6 floppy</td></tr><tr><td>U14 — 8253</td><td>8253 at 40h: channel 0 the system tick, channel 1 DRAM refresh, channel 2 the speaker</td></tr><tr><td>U16 — 8255</td><td>8255 at 60h — keyboard port, speaker gate, and the configuration switches</td></tr><tr><td>D3 — UPD765</td><td>µPD765 floppy controller at 3F0h with the FreeDOS diskette in the drive</td></tr><tr><td>D4 — XTIDE</td><td>XT-IDE fixed disk card at 300h</td></tr><tr><td>D8 — HGC</td><td>Hercules video card</td></tr><tr><td>U10 — EPROM2764</td><td>GLaBIOS in an EPROM at F000</td></tr><tr><td>U19 — EPROM27128</td><td>The XT-IDE option ROM in its own 16 KB window at D0000</td></tr><tr><td>U11 — SRAM628512</td><td>512 KB of SRAM from 00000</td></tr><tr><td>D1 — SPKR</td><td>The speaker: PIT OUT2 ANDed with PPI PB1</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="122">
+  <img loading="lazy" src="shots/board-pc-xt-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 at 4.77 MHz — the machine's whole reason for existing</figcaption>
+</figure>
+<figure class="shot" data-i="123">
+  <img loading="lazy" src="shots/board-pc-xt-dma.jpg" alt="U12 — 8237A">
+  <figcaption><b>U12 — 8237A</b> — 8237A DMA controller at 00h; page registers at 80h, where POST codes appear</figcaption>
+</figure>
+<figure class="shot" data-i="124">
+  <img loading="lazy" src="shots/board-pc-xt-pic.jpg" alt="U13 — 8259A">
+  <figcaption><b>U13 — 8259A</b> — 8259A at 20h — IRQ0 timer, IRQ1 keyboard, IRQ4 serial, IRQ6 floppy</figcaption>
+</figure>
+<figure class="shot" data-i="125">
+  <img loading="lazy" src="shots/board-pc-xt-pit.jpg" alt="U14 — 8253">
+  <figcaption><b>U14 — 8253</b> — 8253 at 40h: channel 0 the system tick, channel 1 DRAM refresh, channel 2 the speaker</figcaption>
+</figure>
+<figure class="shot" data-i="126">
+  <img loading="lazy" src="shots/board-pc-xt-ppi.jpg" alt="U16 — 8255">
+  <figcaption><b>U16 — 8255</b> — 8255 at 60h — keyboard port, speaker gate, and the configuration switches</figcaption>
+</figure>
+<figure class="shot" data-i="127">
+  <img loading="lazy" src="shots/board-pc-xt-fdc.jpg" alt="D3 — UPD765">
+  <figcaption><b>D3 — UPD765</b> — µPD765 floppy controller at 3F0h with the FreeDOS diskette in the drive</figcaption>
+</figure>
+<figure class="shot" data-i="128">
+  <img loading="lazy" src="shots/board-pc-xt-ide.jpg" alt="D4 — XTIDE">
+  <figcaption><b>D4 — XTIDE</b> — XT-IDE fixed disk card at 300h</figcaption>
+</figure>
+<figure class="shot" data-i="129">
+  <img loading="lazy" src="shots/board-pc-xt-hgc.jpg" alt="D8 — HGC">
+  <figcaption><b>D8 — HGC</b> — Hercules video card</figcaption>
+</figure>
+<figure class="shot" data-i="130">
+  <img loading="lazy" src="shots/board-pc-xt-rom.jpg" alt="U10 — EPROM2764">
+  <figcaption><b>U10 — EPROM2764</b> — GLaBIOS in an EPROM at F000</figcaption>
+</figure>
+<figure class="shot" data-i="131">
+  <img loading="lazy" src="shots/board-pc-xt-xubrom.jpg" alt="U19 — EPROM27128">
+  <figcaption><b>U19 — EPROM27128</b> — The XT-IDE option ROM in its own 16 KB window at D0000</figcaption>
+</figure>
+<figure class="shot" data-i="132">
+  <img loading="lazy" src="shots/board-pc-xt-ram.jpg" alt="U11 — SRAM628512">
+  <figcaption><b>U11 — SRAM628512</b> — 512 KB of SRAM from 00000</figcaption>
+</figure>
+<figure class="shot" data-i="133">
+  <img loading="lazy" src="shots/board-pc-xt-spkr.jpg" alt="D1 — SPKR">
+  <figcaption><b>D1 — SPKR</b> — The speaker: PIT OUT2 ANDed with PPI PB1</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>00000-7FFFF</td><td>512 KB RAM</td></tr><tr><td>B0000-B7FFF</td><td>Hercules video RAM</td></tr><tr><td>D0000-D3FFF</td><td>XT-IDE option ROM (a second '138 carves this out of the C0000 window)</td></tr><tr><td>E0000-FFFFF</td><td>GLaBIOS</td></tr><tr><td>Ports 00h / 80h</td><td>8237A DMA / page and POST registers</td></tr><tr><td>Ports 20h, 40h, 60h</td><td>8259A, 8253, 8255</td></tr><tr><td>Ports 300h, 3F0h, 3F8h</td><td>XT-IDE, floppy, COM1</td></tr>
+        </tbody></table><h3>The program</h3><p>None — and that is the point. The Code tab is unused; this machine runs its own BIOS
+    out of ROM exactly like the real thing. POST, then <code>INT 19h</code>, then the boot sector at
+    0000:7C00, then FreeDOS.</p><div class="grid">
+<figure class="shot" data-i="134">
+  <img loading="lazy" src="shots/board-pc-xt-running.jpg" alt="PC/XT — boots FreeDOS — running">
+  <figcaption><b>PC/XT — boots FreeDOS — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="135">
+  <img loading="lazy" src="shots/wave-pc-xt.jpg" alt="PC/XT — boots FreeDOS — on the analyzer">
+  <figcaption><b>PC/XT — boots FreeDOS — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Boot it</b><p>Press <b>Start</b>, then <b>⚡ turbo</b>, and wait. GLaBIOS POSTs, counts memory, finds
+      the drives, and loads FreeDOS. Then type at it — your keystrokes travel the serial keyboard
+      protocol into IRQ1 exactly like every other key on this board.</p></li><li><b>Read the POST codes</b><p>Double-click the 8237A while it boots. The first field is <b>POST code (port 80h)</b> —
+      the same port real machines put on a diagnostic card. Watch it step through the BIOS's checkpoints
+      as the machine comes up.</p></li><li><b>Watch DMA move a sector</b><p>Double-click the floppy controller while DOS is listing a directory. The sector counters
+      climb and the track number moves. Now double-click the 8237A: channel 2's address and count
+      registers are being decremented by the transfer. The CPU is not copying those bytes — the DMA
+      controller is.</p></li><li><b>Hear the beep</b><p>The POST beep is not a sound file. Timer channel 2 generates a square wave, PPI port B bit
+      1 gates it through an AND gate, and the result drives the speaker cone. Double-click the speaker
+      to see the measured frequency and to actually listen.</p></li><li><b>Change the machine's configuration</b><p>The DIP switch pack tells the BIOS what hardware is installed. Flip a switch while the
+      machine runs, then reset it: the POST reports a different configuration. That is what those
+      switches did on a real motherboard.</p></li><li><b>Boot something else</b><p>Open <b>🖴 disks</b>, import your own <code>.img</code>, and insert it. Or attach the
+      synthesized FreeDOS hard disk and boot with no floppy at all — the tool builds that image on
+      demand, MBR and all.</p></li>
+      </ol><div class="grid hero1">
+<figure class="shot" data-i="136">
+  <img loading="lazy" src="shots/lab-pc-xt.jpg" alt="PC/XT — boots FreeDOS — the guided lab">
+  <figcaption><b>PC/XT — boots FreeDOS — the guided lab</b> — This board ships a numbered exercise; the ticks persist as you work through it.</figcaption>
+</figure></div></section><section id="dual-8088" class="board" data-name="dual 8088 — shared ram (8289)">
+      <h2>Dual 8088 — shared RAM (8289)</h2>
+      <p class="one">Two processors, one memory, and an arbiter deciding who owns the bus.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="137">
+  <img loading="lazy" src="shots/board-dual-8088.jpg" alt="Dual 8088 — shared RAM (8289)">
+  <figcaption><b>Dual 8088 — shared RAM (8289)</b> — Two processors, one memory, and an arbiter deciding who owns the bus.</figcaption>
+</figure></div>
+      <div class="story"><p>Two complete 8088 clusters — each with its own clock, 8288 controller, 8289 arbiter,
+    latch and buffers — share a single ROM and RAM. Only one may drive the shared bus at a time, and
+    the 8289s decide between them using an open-collector <code>~BUSY</code> line and a priority chain.</p>
+    <p>There is no cache, no coherence protocol, no memory barrier. There is a bus, and a rule about
+    who may use it. Both processors boot the same ROM and race for a claim byte with a single
+    <code>XCHG</code> — which is atomic only because the CPU asserts <code>~LOCK</code> and the arbiter
+    honours it.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U7 — 8088</td><td>Processor A — top priority in the arbitration chain</td></tr><tr><td>U9 — 8289</td><td>8289 arbiter A: ~BPRN grounded, so it wins ties</td></tr><tr><td>U8 — 8288</td><td>8288 A — its commands are gated by the arbiter's ~AEN</td></tr><tr><td>U14 — 8088</td><td>Processor B — takes the bus only when A releases it</td></tr><tr><td>U16 — 8289</td><td>8289 arbiter B, its ~BPRN fed from A's ~BPRO</td></tr><tr><td>U2 — SRAM6264</td><td>The shared SRAM both processors write into</td></tr><tr><td>D1 — LED8</td><td>The output port showing whichever counter was updated last</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="138">
+  <img loading="lazy" src="shots/board-dual-8088-acpu.jpg" alt="U7 — 8088">
+  <figcaption><b>U7 — 8088</b> — Processor A — top priority in the arbitration chain</figcaption>
+</figure>
+<figure class="shot" data-i="139">
+  <img loading="lazy" src="shots/board-dual-8088-aarb.jpg" alt="U9 — 8289">
+  <figcaption><b>U9 — 8289</b> — 8289 arbiter A: ~BPRN grounded, so it wins ties</figcaption>
+</figure>
+<figure class="shot" data-i="140">
+  <img loading="lazy" src="shots/board-dual-8088-actl.jpg" alt="U8 — 8288">
+  <figcaption><b>U8 — 8288</b> — 8288 A — its commands are gated by the arbiter's ~AEN</figcaption>
+</figure>
+<figure class="shot" data-i="141">
+  <img loading="lazy" src="shots/board-dual-8088-bcpu.jpg" alt="U14 — 8088">
+  <figcaption><b>U14 — 8088</b> — Processor B — takes the bus only when A releases it</figcaption>
+</figure>
+<figure class="shot" data-i="142">
+  <img loading="lazy" src="shots/board-dual-8088-barb.jpg" alt="U16 — 8289">
+  <figcaption><b>U16 — 8289</b> — 8289 arbiter B, its ~BPRN fed from A's ~BPRO</figcaption>
+</figure>
+<figure class="shot" data-i="143">
+  <img loading="lazy" src="shots/board-dual-8088-ram.jpg" alt="U2 — SRAM6264">
+  <figcaption><b>U2 — SRAM6264</b> — The shared SRAM both processors write into</figcaption>
+</figure>
+<figure class="shot" data-i="144">
+  <img loading="lazy" src="shots/board-dual-8088-led.jpg" alt="D1 — LED8">
+  <figcaption><b>D1 — LED8</b> — The output port showing whichever counter was updated last</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Shared A15 = 0</td><td>ROM</td></tr><tr><td>Shared A15 = 1</td><td>RAM</td></tr><tr><td>[0010]</td><td>The claim byte, taken with a locked XCHG</td></tr><tr><td>[0020] / [0022]</td><td>Processor 1's counter and processor 2's counter</td></tr>
+        </tbody></table><h3>The program</h3><p>Both CPUs run the same code. Each does <code>xchg al, [0x10]</code> with AL = 1; the
+    processor that reads back a zero is “first” and takes counter [0020], the other takes [0022]. Then
+    both increment their own counter forever and write the low byte to the LED port.</p><pre class="code"><code>        mov al, 1
+        xchg al, [0x10]    ; atomic claim — the CPU asserts ~LOCK here
+        mov si, 0x22
+        or  al, al
+        jnz go
+        mov si, 0x20
+go:     inc word [si]</code></pre><div class="grid">
+<figure class="shot" data-i="145">
+  <img loading="lazy" src="shots/board-dual-8088-running.jpg" alt="Dual 8088 — shared RAM (8289) — running">
+  <figcaption><b>Dual 8088 — shared RAM (8289) — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="146">
+  <img loading="lazy" src="shots/wave-dual-8088.jpg" alt="Dual 8088 — shared RAM (8289) — on the analyzer">
+  <figcaption><b>Dual 8088 — shared RAM (8289) — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Watch the bus change hands</b><p>Put both arbiters' <code>~AEN</code> lines and the shared <code>~BUSY</code> on the
+      analyzer. Exactly one ~AEN is low at any moment, and ~BUSY is low whenever anyone holds the bus.
+      Zoom in on a handover: one processor releases, there is a short exchange gap, and the other takes
+      over. That gap is deliberate — it is what stops the higher-priority CPU from starving the other.</p></li><li><b>Find ~LOCK</b><p>Add <code>~LOCK</code> to the analyzer and find the <code>XCHG</code> at startup. The line
+      drops for the duration of the exchange, which pins the bus across the idle gap in the middle of
+      the instruction. Without it, the other processor could slip in between the read and the write and
+      both would believe they were first.</p></li><li><b>Prove fairness</b><p>Double-click each 8289 while it runs and compare the grant counts. They stay close, even
+      though arbiter A has strict priority. Fairness comes from the exchange cooldown, not from luck.</p></li><li><b>See why locks exist</b><p>Open the unified memory view at <code>00020</code>. Two counters, two processors, one
+      memory, incrementing independently. Now imagine both incrementing the <i>same</i> word: read,
+      add, write from two masters with no lock loses updates. This board is the smallest complete
+      demonstration of why that is a hard problem.</p></li>
+      </ol><div class="grid hero1">
+<figure class="shot" data-i="147">
+  <img loading="lazy" src="shots/lab-dual-8088.jpg" alt="Dual 8088 — shared RAM (8289) — the guided lab">
+  <figcaption><b>Dual 8088 — shared RAM (8289) — the guided lab</b> — This board ships a numbered exercise; the ticks persist as you work through it.</figcaption>
+</figure></div></section><section id="traffic-8255" class="board" data-name="traffic light (8255)">
+      <h2>Traffic light (8255)</h2>
+      <p class="one">An 8255 drives a traffic light — and the whole board was wired by the planner.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="148">
+  <img loading="lazy" src="shots/board-traffic-8255.jpg" alt="Traffic light (8255)">
+  <figcaption><b>Traffic light (8255)</b> — An 8255 drives a traffic light — and the whole board was wired by the planner.</figcaption>
+</figure></div>
+      <div class="story"><p>A deliberately small application board. Its real subject is the 8255 PPI: three ports
+    whose direction you choose by writing a control word, which is how almost every 1980s peripheral
+    was attached to a bus.</p>
+    <p>It is also a demonstration of the autowiring planner. The CPU, ROM, RAM and PPI were all placed
+    and wired automatically — the only hand wiring is the three LEDs on port A.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U7 — 8255</td><td>8255 PPI — port A configured as output, driving the lamps</td></tr><tr><td>D1 — LED8</td><td>Three of the eight LEDs: red, amber, green</td></tr><tr><td>U2 — 8088</td><td>8088, autoconnected to its clock and ROM</td></tr><tr><td>U3 — EPROM2764</td><td>2764 EPROM holding the sequence</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="149">
+  <img loading="lazy" src="shots/board-traffic-8255-ppi.jpg" alt="U7 — 8255">
+  <figcaption><b>U7 — 8255</b> — 8255 PPI — port A configured as output, driving the lamps</figcaption>
+</figure>
+<figure class="shot" data-i="150">
+  <img loading="lazy" src="shots/board-traffic-8255-led.jpg" alt="D1 — LED8">
+  <figcaption><b>D1 — LED8</b> — Three of the eight LEDs: red, amber, green</figcaption>
+</figure>
+<figure class="shot" data-i="151">
+  <img loading="lazy" src="shots/board-traffic-8255-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088, autoconnected to its clock and ROM</figcaption>
+</figure>
+<figure class="shot" data-i="152">
+  <img loading="lazy" src="shots/board-traffic-8255-rom.jpg" alt="U3 — EPROM2764">
+  <figcaption><b>U3 — EPROM2764</b> — 2764 EPROM holding the sequence</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Ports 60h-63h</td><td>8255 (A0/A1 select the port; 63h is the control register)</td></tr><tr><td>Control word 80h</td><td>Mode 0, all ports output</td></tr><tr><td>PA0/PA1/PA2</td><td>Red, amber, green</td></tr>
+        </tbody></table><h3>The program</h3><p>Write 80h to the control register, then loop through the light sequence: red, red+amber,
+    green, amber — each held for a delay.</p><pre class="code"><code>        mov al, 0x80
+        out 0x63, al       ; mode 0, all ports out
+loop:   mov al, 1          ; red
+        call show
+        mov al, 3          ; red + amber
+        call show
+        mov al, 4          ; green
+        call show</code></pre><div class="grid">
+<figure class="shot" data-i="153">
+  <img loading="lazy" src="shots/board-traffic-8255-running.jpg" alt="Traffic light (8255) — running">
+  <figcaption><b>Traffic light (8255) — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="154">
+  <img loading="lazy" src="shots/wave-traffic-8255.jpg" alt="Traffic light (8255) — on the analyzer">
+  <figcaption><b>Traffic light (8255) — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Watch the control word take effect</b><p>Pause and double-click the 8255. The control register is decoded for you into port
+      directions. Change it to <code>90h</code> (port A becomes an input) and resume: the lamps freeze,
+      because an input port does not drive anything. The program is still writing — the chip is simply
+      no longer listening.</p></li><li><b>Drive the lamps by hand</b><p>Pause and edit the port A latch directly in the programmer's view. The lights follow
+      immediately. You are doing exactly what an <code>OUT</code> instruction does, without a CPU.</p></li><li><b>See what the planner built</b><p>Nothing here was wired by hand except the LEDs. Look at the address latch and the IO
+      decoder: press <b>⚡ complete</b> and it reports nothing left to do, because the board is already
+      complete. Then delete the decoder and press it again — the planner will rebuild it.</p></li>
+      </ol></section><section id="dip-echo" class="board" data-name="dip switches → leds">
+      <h2>DIP switches → LEDs</h2>
+      <p class="one">The simplest possible input port: one buffer, no address decoding at all.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="155">
+  <img loading="lazy" src="shots/board-dip-echo.jpg" alt="DIP switches → LEDs">
+  <figcaption><b>DIP switches → LEDs</b> — The simplest possible input port: one buffer, no address decoding at all.</figcaption>
+</figure></div>
+      <div class="story"><p>An input port is a tri-state buffer that drives the data bus when the CPU reads. That is
+    the entire idea, and this board is that idea with nothing added: a '244 whose enables are
+    <code>~RD OR NOT IO/~M</code>, so it answers <i>every</i> IO read in the address space.</p>
+    <p>Output is the mirror image: a '373 latching on every IO write. Two chips, zero decoders, and a
+    complete input-and-output machine.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>D1 — SW8</td><td>Eight DIP switches — flip them while the simulation runs</td></tr><tr><td>U6 — 74LS244</td><td>74LS244 buffer gating the switches onto AD0-AD7 during any IO read</td></tr><tr><td>U7 — 74LS373</td><td>74LS373 latching AD0-AD7 on any IO write</td></tr><tr><td>D2 — LED8</td><td>The LEDs, showing what was latched</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="156">
+  <img loading="lazy" src="shots/board-dip-echo-sw.jpg" alt="D1 — SW8">
+  <figcaption><b>D1 — SW8</b> — Eight DIP switches — flip them while the simulation runs</figcaption>
+</figure>
+<figure class="shot" data-i="157">
+  <img loading="lazy" src="shots/board-dip-echo-inbuf.jpg" alt="U6 — 74LS244">
+  <figcaption><b>U6 — 74LS244</b> — 74LS244 buffer gating the switches onto AD0-AD7 during any IO read</figcaption>
+</figure>
+<figure class="shot" data-i="158">
+  <img loading="lazy" src="shots/board-dip-echo-port.jpg" alt="U7 — 74LS373">
+  <figcaption><b>U7 — 74LS373</b> — 74LS373 latching AD0-AD7 on any IO write</figcaption>
+</figure>
+<figure class="shot" data-i="159">
+  <img loading="lazy" src="shots/board-dip-echo-led.jpg" alt="D2 — LED8">
+  <figcaption><b>D2 — LED8</b> — The LEDs, showing what was latched</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Any IO read</td><td>The '244 drives the bus — every port address returns the switches</td></tr><tr><td>Any IO write</td><td>The '373 latches — every port address writes the LEDs</td></tr>
+        </tbody></table><h3>The program</h3><p>Three instructions, forever: read a byte, write it back out, jump.</p><pre class="code"><code>loop:   in  al, 0          ; the '244 answers every IO read
+        out 0, al          ; the '373 latches every IO write
+        jmp loop</code></pre><div class="grid">
+<figure class="shot" data-i="160">
+  <img loading="lazy" src="shots/board-dip-echo-running.jpg" alt="DIP switches → LEDs — running">
+  <figcaption><b>DIP switches → LEDs — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="161">
+  <img loading="lazy" src="shots/wave-dip-echo.jpg" alt="DIP switches → LEDs — on the analyzer">
+  <figcaption><b>DIP switches → LEDs — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Close the loop with your hands</b><p>Run the board and click the switches on the canvas. The LEDs follow instantly, because the
+      CPU is reading and writing thousands of times a second. You are inside the loop.</p></li><li><b>Prove there is no address</b><p>Change <code>in al, 0</code> to <code>in al, 0x99</code> and re-assemble. It still works.
+      Then add a '138, wire the buffer's enable to one of its outputs, and suddenly the port has an
+      address and only one <code>IN</code> reaches it. That difference — a gate versus a decoder — is
+      the entire subject of address decoding.</p></li><li><b>Watch the bus turn around</b><p>Add the AD bus lane and <code>~RD</code> to the analyzer. During the read, the CPU stops
+      driving AD and the '244 takes over. That handover is what tri-state outputs are for, and hovering
+      the bus during a read shows exactly who is driving it.</p></li><li><b>Create a contention</b><p>Wire the '244's enable permanently to ground so it always drives the bus. Now start: the
+      simulation stops with a <b>bus contention</b> report, because the buffer and the CPU are both
+      driving the same wires. On a real board that is a hot chip and a mystery; here it is a message
+      naming the net.</p></li>
+      </ol></section><section id="seg7-count" class="board" data-name="7-segment counter">
+      <h2>7-segment counter</h2>
+      <p class="one">A seven-segment digit, decoded entirely in software from a table.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="162">
+  <img loading="lazy" src="shots/board-seg7-count.jpg" alt="7-segment counter">
+  <figcaption><b>7-segment counter</b> — A seven-segment digit, decoded entirely in software from a table.</figcaption>
+</figure></div>
+      <div class="story"><p>A seven-segment display has no intelligence: it is seven LEDs in the shape of a figure
+    eight. Turning “3” into the right pattern is the program's job, and the classic answer is a
+    lookup table — one byte per digit, one bit per segment.</p>
+    <p>This board is that table plus a '373 output port. It is worth doing once, because after this
+    every mention of a “decoder driver” chip makes sense: those chips exist to move this table into
+    hardware.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>D1 — SEG7</td><td>Common-cathode seven-segment digit — segments a…g plus the decimal point</td></tr><tr><td>U6 — 74LS373</td><td>74LS373 output port latching on any IO write</td></tr><tr><td>U2 — 8088</td><td>8088 walking the segment table</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="163">
+  <img loading="lazy" src="shots/board-seg7-count-seg.jpg" alt="D1 — SEG7">
+  <figcaption><b>D1 — SEG7</b> — Common-cathode seven-segment digit — segments a…g plus the decimal point</figcaption>
+</figure>
+<figure class="shot" data-i="164">
+  <img loading="lazy" src="shots/board-seg7-count-port.jpg" alt="U6 — 74LS373">
+  <figcaption><b>U6 — 74LS373</b> — 74LS373 output port latching on any IO write</figcaption>
+</figure>
+<figure class="shot" data-i="165">
+  <img loading="lazy" src="shots/board-seg7-count-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 walking the segment table</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Any IO write</td><td>The '373 → the display segments</td></tr><tr><td>Bit order</td><td>Q0…Q7 → a, b, c, d, e, f, g, dp</td></tr>
+        </tbody></table><h3>The program</h3><p>Walk a ten-entry table, writing each pattern to the port with a delay, then start
+    again.</p><pre class="code"><code>table:  db 0x3F, 0x06, 0x5B, 0x4F, 0x66
+        db 0x6D, 0x7D, 0x07, 0x7F, 0x6F</code></pre><div class="grid">
+<figure class="shot" data-i="166">
+  <img loading="lazy" src="shots/board-seg7-count-running.jpg" alt="7-segment counter — running">
+  <figcaption><b>7-segment counter — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="167">
+  <img loading="lazy" src="shots/wave-seg7-count.jpg" alt="7-segment counter — on the analyzer">
+  <figcaption><b>7-segment counter — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Decode the table by hand</b><p><code>0x3F</code> is 0011 1111 — segments a through f on, g off. That is a zero.
+      <code>0x06</code> is just b and c: a one. Work out two or three of them and the table stops being
+      magic numbers.</p></li><li><b>Invent a character</b><p>Add an entry to the table. <code>0x77</code> is an A; <code>0x79</code> is an E;
+      <code>0x40</code> is a bare minus sign. Extend the loop's compare and watch your character appear
+      in the sequence.</p></li><li><b>Light the decimal point</b><p>OR every table entry with <code>0x80</code>. The decimal point comes on for every digit —
+      because it is simply bit 7 of the same byte, wired to one more LED.</p></li><li><b>Break the common cathode</b><p>Delete the wire from the display's <code>CC</code> pin to ground. Every segment goes dark
+      at once, no matter what the port drives: with no return path, none of the LEDs can conduct. It is
+      the most obvious thing in the world once you have seen it fail.</p></li>
+      </ol></section><section id="wait-state" class="board" data-name="wait-state generator">
+      <h2>Wait-state generator</h2>
+      <p class="one">Three flip-flops that make the CPU wait — the classic wait-state generator.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="168">
+  <img loading="lazy" src="shots/board-wait-state.jpg" alt="Wait-state generator">
+  <figcaption><b>Wait-state generator</b> — Three flip-flops that make the CPU wait — the classic wait-state generator.</figcaption>
+</figure></div>
+      <div class="story"><p>Fast processors and slow memories have always coexisted by making the processor wait.
+    The 8088 samples <code>READY</code> during T3; if it is low, it inserts a Tw state and looks
+    again. Something has to pull READY low at the right moment and release it a known number of clocks
+    later.</p>
+    <p>The classic answer is a shift register: ALE clears the chain at the start of every bus cycle,
+    and each clock marches a 1 one stage further along. Take READY from the third stage and every
+    cycle is one clock longer. This board is exactly that, built from three '74 flip-flops.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U9 — 74LS74</td><td>74LS74 — the first two stages of the wait chain</td></tr><tr><td>U10 — 74LS74</td><td>74LS74 — the third stage; its Q drives the 8284A's RDY1</td></tr><tr><td>U1 — 8284A</td><td>8284A: it synchronizes RDY1 into the CPU's READY</td></tr><tr><td>U2 — 8088</td><td>8088 — its ALE clears the chain at the start of every bus cycle</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="169">
+  <img loading="lazy" src="shots/board-wait-state-ws1.jpg" alt="U9 — 74LS74">
+  <figcaption><b>U9 — 74LS74</b> — 74LS74 — the first two stages of the wait chain</figcaption>
+</figure>
+<figure class="shot" data-i="170">
+  <img loading="lazy" src="shots/board-wait-state-ws2.jpg" alt="U10 — 74LS74">
+  <figcaption><b>U10 — 74LS74</b> — 74LS74 — the third stage; its Q drives the 8284A's RDY1</figcaption>
+</figure>
+<figure class="shot" data-i="171">
+  <img loading="lazy" src="shots/board-wait-state-8284a.jpg" alt="U1 — 8284A">
+  <figcaption><b>U1 — 8284A</b> — 8284A: it synchronizes RDY1 into the CPU's READY</figcaption>
+</figure>
+<figure class="shot" data-i="172">
+  <img loading="lazy" src="shots/board-wait-state-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 — its ALE clears the chain at the start of every bus cycle</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>ALE (inverted)</td><td>Clears all three flip-flops</td></tr><tr><td>CLK</td><td>Clocks the chain</td></tr><tr><td>Stage 3 Q</td><td>→ 8284A RDY1 → CPU READY</td></tr><tr><td>~AEN1</td><td>Grounded — an unused arbiter enable must be tied low to arm RDY1</td></tr>
+        </tbody></table><h3>The program</h3><p>The same blinker as the minimal kit. Identical software, measurably slower machine.</p><div class="grid">
+<figure class="shot" data-i="173">
+  <img loading="lazy" src="shots/board-wait-state-running.jpg" alt="Wait-state generator — running">
+  <figcaption><b>Wait-state generator — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="174">
+  <img loading="lazy" src="shots/wave-wait-state.jpg" alt="Wait-state generator — on the analyzer">
+  <figcaption><b>Wait-state generator — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>See the extra T-state</b><p>Put <code>CLK</code>, <code>ALE</code> and <code>READY</code> on the analyzer and zoom
+      into one bus cycle. READY dips low after ALE and comes back one clock later, and the cycle takes
+      five clocks instead of four. That extra clock is Tw.</p></li><li><b>Measure the cost</b><p>Count clocks between two ALE pulses here, then load the <b>Minimal 8088 kit</b> and count
+      again. Same program, same instructions, roughly 25% more time. That is what a wait state costs,
+      and why fast memory was worth paying for.</p></li><li><b>Change the number of waits</b><p>Move the wire feeding RDY1 from the third flip-flop's Q to the second: one fewer wait
+      state, and the machine speeds up. Take READY from the first stage and you are back to zero waits.
+      This is a hardware setting you can dial with one wire.</p></li><li><b>Remove READY entirely</b><p>Delete the wire into RDY1 and run. The 8284A's READY defaults high when nothing is wired
+      to it — deliberately, so minimal boards work with no wait-state logic at all — and the machine
+      runs at full speed again. Then ground RDY1 instead: READY never comes up, the CPU waits forever
+      in Tw, and the board hangs mid-cycle. Both failure modes, one wire apart.</p></li>
+      </ol><div class="grid hero1">
+<figure class="shot" data-i="175">
+  <img loading="lazy" src="shots/lab-wait-state.jpg" alt="Wait-state generator — the guided lab">
+  <figcaption><b>Wait-state generator — the guided lab</b> — This board ships a numbered exercise; the ticks persist as you work through it.</figcaption>
+</figure></div></section><section id="mixed-cpu" class="board" data-name="mixed 8086 + 8088 — shared ram">
+      <h2>Mixed 8086 + 8088 — shared RAM</h2>
+      <p class="one">An 8086 and an 8088 sharing one word-wide bus — and paying different prices for it.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="176">
+  <img loading="lazy" src="shots/board-mixed-cpu.jpg" alt="Mixed 8086 + 8088 — shared RAM">
+  <figcaption><b>Mixed 8086 + 8088 — shared RAM</b> — An 8086 and an 8088 sharing one word-wide bus — and paying different prices for it.</figcaption>
+</figure></div>
+      <div class="story"><p>The 8086 and 8088 are the same processor with different bus widths. Put them on one
+    shared 16-bit memory and the difference stops being trivia: the 8086 moves a word in one cycle,
+    while the 8088 must do two byte cycles and route its eight data lines to whichever bank the address
+    selects.</p>
+    <p>That routing is the '245 transceiver labelled <i>swap</i>: when the 8088 addresses an odd byte,
+    its D0-D7 must cross to the odd bank's D8-D15 lane. The 8086 needs no such thing — it drives both
+    lanes natively and signals its intent with <code>~BHE</code>, which the 8088 has to synthesize as
+    <code>NOT A0</code>.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U10 — 8086</td><td>The 8086 — priority master, drives both byte lanes</td></tr><tr><td>U15 — 8088</td><td>The 8088 — one byte lane, and a swap buffer to reach the other</td></tr><tr><td>U26 — 74LS245</td><td>74LS245 crossing the 8088's data onto the odd bank when A0 = 1</td></tr><tr><td>U24 — 74LS244</td><td>74LS244 synthesizing BHEN as NOT A0 for the 8088</td></tr><tr><td>U3 — SRAM6264</td><td>Even bank</td></tr><tr><td>U4 — SRAM6264</td><td>Odd bank</td></tr><tr><td>U12 — 8289</td><td>8289 arbiter for the 8086</td></tr><tr><td>U17 — 8289</td><td>8289 arbiter for the 8088</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="177">
+  <img loading="lazy" src="shots/board-mixed-cpu-acpu.jpg" alt="U10 — 8086">
+  <figcaption><b>U10 — 8086</b> — The 8086 — priority master, drives both byte lanes</figcaption>
+</figure>
+<figure class="shot" data-i="178">
+  <img loading="lazy" src="shots/board-mixed-cpu-bcpu.jpg" alt="U15 — 8088">
+  <figcaption><b>U15 — 8088</b> — The 8088 — one byte lane, and a swap buffer to reach the other</figcaption>
+</figure>
+<figure class="shot" data-i="179">
+  <img loading="lazy" src="shots/board-mixed-cpu-bswap.jpg" alt="U26 — 74LS245">
+  <figcaption><b>U26 — 74LS245</b> — 74LS245 crossing the 8088's data onto the odd bank when A0 = 1</figcaption>
+</figure>
+<figure class="shot" data-i="180">
+  <img loading="lazy" src="shots/board-mixed-cpu-bbufb.jpg" alt="U24 — 74LS244">
+  <figcaption><b>U24 — 74LS244</b> — 74LS244 synthesizing BHEN as NOT A0 for the 8088</figcaption>
+</figure>
+<figure class="shot" data-i="181">
+  <img loading="lazy" src="shots/board-mixed-cpu-raml.jpg" alt="U3 — SRAM6264">
+  <figcaption><b>U3 — SRAM6264</b> — Even bank</figcaption>
+</figure>
+<figure class="shot" data-i="182">
+  <img loading="lazy" src="shots/board-mixed-cpu-ramh.jpg" alt="U4 — SRAM6264">
+  <figcaption><b>U4 — SRAM6264</b> — Odd bank</figcaption>
+</figure>
+<figure class="shot" data-i="183">
+  <img loading="lazy" src="shots/board-mixed-cpu-aarb.jpg" alt="U12 — 8289">
+  <figcaption><b>U12 — 8289</b> — 8289 arbiter for the 8086</figcaption>
+</figure>
+<figure class="shot" data-i="184">
+  <img loading="lazy" src="shots/board-mixed-cpu-barb.jpg" alt="U17 — 8289">
+  <figcaption><b>U17 — 8289</b> — 8289 arbiter for the 8088</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Shared A15 = 0</td><td>ROM (two banks)</td></tr><tr><td>Shared A15 = 1</td><td>RAM (two banks)</td></tr><tr><td>ramL ~WE</td><td>MWTC OR A0 — blocked on odd addresses</td></tr><tr><td>ramH ~WE</td><td>MWTC OR BHEN — blocked when the high lane is not selected</td></tr>
+        </tbody></table><h3>The program</h3><p>The same atomic-claim program as the dual-8088 board: both processors race for a byte
+    with a locked <code>XCHG</code>, then each increments its own counter forever.</p><div class="grid">
+<figure class="shot" data-i="185">
+  <img loading="lazy" src="shots/board-mixed-cpu-running.jpg" alt="Mixed 8086 + 8088 — shared RAM — running">
+  <figcaption><b>Mixed 8086 + 8088 — shared RAM — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="186">
+  <img loading="lazy" src="shots/wave-mixed-cpu.jpg" alt="Mixed 8086 + 8088 — shared RAM — on the analyzer">
+  <figcaption><b>Mixed 8086 + 8088 — shared RAM — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Measure the width penalty</b><p>Put both arbiters' <code>~AEN</code> on the analyzer and watch one increment from each
+      processor. The 8088 holds the bus roughly twice as long for identical work, because every word
+      touch is two cycles. This is the entire commercial argument the 8086 had over the 8088 — and the
+      cost argument the 8088 had over the 8086.</p></li><li><b>Follow a byte through the swap</b><p>Hover both sides of the swap '245 while the 8088 writes an odd address. The same byte
+      appears on D0-D7 of the CPU and on D8-D15 of the bus. Then watch an even write: the swap buffer
+      is disabled and the direct transceiver carries it instead.</p></li><li><b>Watch BHEN get built</b><p>Add the 8086's <code>~BHE</code> and the 8088's synthesized <code>BHEN</code> to the
+      analyzer. One comes from a pin; the other comes from an inverter on A0. They serve the same
+      purpose — telling the odd bank whether it is included in this transfer.</p></li>
+      </ol><div class="grid hero1">
+<figure class="shot" data-i="187">
+  <img loading="lazy" src="shots/lab-mixed-cpu.jpg" alt="Mixed 8086 + 8088 — shared RAM — the guided lab">
+  <figcaption><b>Mixed 8086 + 8088 — shared RAM — the guided lab</b> — This board ships a numbered exercise; the ticks persist as you work through it.</figcaption>
+</figure></div></section><section id="pc-speaker" class="board" data-name="pit speaker (music)">
+      <h2>PIT speaker (music)</h2>
+      <p class="one">The 8253 as a square-wave synthesizer: change the divisor, change the note.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="188">
+  <img loading="lazy" src="shots/board-pc-speaker.jpg" alt="PIT speaker (music)">
+  <figcaption><b>PIT speaker (music)</b> — The 8253 as a square-wave synthesizer: change the divisor, change the note.</figcaption>
+</figure></div>
+      <div class="story"><p>The PC's speaker was a timer channel wired to a cone. In mode 3 a counter divides its
+    input clock by the reload value and toggles its output — a square wave whose frequency is
+    <code>1.193 MHz ÷ divisor</code>. Music is a sequence of divisors.</p>
+    <p>Here channel 0's output goes straight to the speaker, so there is no gating: whatever the timer
+    does, you hear.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U7 — 8253</td><td>8253 timer, channel 0 in mode 3, clocked from the 8284A's PCLK</td></tr><tr><td>D1 — SPKR</td><td>The speaker — its symbol shows the live frequency</td></tr><tr><td>U2 — 8088</td><td>8088 writing a new divisor for each note</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="189">
+  <img loading="lazy" src="shots/board-pc-speaker-pit.jpg" alt="U7 — 8253">
+  <figcaption><b>U7 — 8253</b> — 8253 timer, channel 0 in mode 3, clocked from the 8284A's PCLK</figcaption>
+</figure>
+<figure class="shot" data-i="190">
+  <img loading="lazy" src="shots/board-pc-speaker-spk.jpg" alt="D1 — SPKR">
+  <figcaption><b>D1 — SPKR</b> — The speaker — its symbol shows the live frequency</figcaption>
+</figure>
+<figure class="shot" data-i="191">
+  <img loading="lazy" src="shots/board-pc-speaker-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 writing a new divisor for each note</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Ports 40h-5Fh</td><td>8253 (autoconnected)</td></tr><tr><td>Port 43h</td><td>Control register — 36h selects channel 0, mode 3, both bytes</td></tr><tr><td>Port 40h</td><td>Divisor, low byte then high</td></tr><tr><td>Frequency</td><td>2386363 ÷ divisor (this board's CLK0 rate)</td></tr>
+        </tbody></table><h3>The program</h3><p>Four notes in a loop. Each writes the control word, then the divisor low and high, then
+    delays.</p><pre class="code"><code>note:   mov al, 0x36
+        out 0x43, al       ; ch0, mode 3, square wave
+        mov al, bl
+        out 0x40, al       ; divisor low
+        mov al, bh
+        out 0x40, al       ; divisor high</code></pre><div class="grid">
+<figure class="shot" data-i="192">
+  <img loading="lazy" src="shots/board-pc-speaker-running.jpg" alt="PIT speaker (music) — running">
+  <figcaption><b>PIT speaker (music) — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="193">
+  <img loading="lazy" src="shots/wave-pc-speaker.jpg" alt="PIT speaker (music) — on the analyzer">
+  <figcaption><b>PIT speaker (music) — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Listen</b><p>Run the board and double-click the speaker. Press <b>🔊 listen</b> and the tones play
+      through your machine's audio — a real oscillator following the measured frequency of the wire.</p></li><li><b>Compose</b><p>The divisors in the program are A4, E5, A5 and A5 again. Compute your own:
+      <code>divisor = 2386363 ÷ frequency</code>. Middle C is 262 Hz, so 9108. Replace a note and
+      listen to the difference.</p></li><li><b>See the wave</b><p>Add the timer's <code>OUT0</code> to the analyzer and zoom until individual transitions
+      appear. It is a perfect square wave, and its period is exactly the divisor times the input clock.
+      Zoom out and the note changes appear as blocks of different density.</p></li><li><b>Try the other modes</b><p>Change the control word from <code>0x36</code> (mode 3) to <code>0x34</code> (mode 2, rate
+      generator). Instead of a symmetric square wave you get a narrow pulse once per period — audibly
+      thinner, and visibly different on the analyzer. Mode 0 stops it making sound at all.</p></li>
+      </ol></section><section id="lpt-printer" class="board" data-name="lpt1 printer">
+      <h2>LPT1 printer</h2>
+      <p class="one">Centronics printing done honestly: poll BUSY, latch a byte, pulse STROBE.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="194">
+  <img loading="lazy" src="shots/board-lpt-printer.jpg" alt="LPT1 printer">
+  <figcaption><b>LPT1 printer</b> — Centronics printing done honestly: poll BUSY, latch a byte, pulse STROBE.</figcaption>
+</figure></div>
+      <div class="story"><p>The parallel port is three registers and a handshake. Data goes into the latch at 378h,
+    the printer's status is readable at 379h, and control bits at 37Ah include the STROBE line. To
+    print a byte: wait until the printer is not busy, write the data, pulse STROBE low and high.</p>
+    <p>The printer answers with BUSY while it works and a short ~ACK pulse when it is done. Both are
+    real pins on this board, not a software abstraction.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>D2 — LPT378</td><td>LPT378 adapter card, self-decoding at 378h-37Ah</td></tr><tr><td>D1 — PRINTER</td><td>The printer — double-click it to read the paper</td></tr><tr><td>U2 — 8088</td><td>8088 running the handshake in software</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="195">
+  <img loading="lazy" src="shots/board-lpt-printer-lpt.jpg" alt="D2 — LPT378">
+  <figcaption><b>D2 — LPT378</b> — LPT378 adapter card, self-decoding at 378h-37Ah</figcaption>
+</figure>
+<figure class="shot" data-i="196">
+  <img loading="lazy" src="shots/board-lpt-printer-prn.jpg" alt="D1 — PRINTER">
+  <figcaption><b>D1 — PRINTER</b> — The printer — double-click it to read the paper</figcaption>
+</figure>
+<figure class="shot" data-i="197">
+  <img loading="lazy" src="shots/board-lpt-printer-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088 running the handshake in software</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>378h</td><td>Data latch → the printer's eight data pins</td></tr><tr><td>379h</td><td>Status — bit 7 is inverted BUSY, bit 6 ~ACK, bit 5 paper end, bit 4 select</td></tr><tr><td>37Ah</td><td>Control — bit 0 STROBE, bit 1 auto-feed, bit 2 ~INIT, bit 3 select-in</td></tr>
+        </tbody></table><h3>The program</h3><p>Walk a string; for each character, poll status bit 7 until the printer is free, write
+    the byte to 378h, then write 0Dh and 0Ch to 37Ah to pulse STROBE.</p><pre class="code"><code>wait:   in  al, dx         ; 379h status
+        test al, 0x80      ; bit 7 = NOT busy
+        jz  wait
+        mov al, bl
+        out 0x378, al      ; data
+        mov al, 0x0D
+        out 0x37A, al      ; strobe low
+        mov al, 0x0C
+        out 0x37A, al      ; strobe high</code></pre><div class="grid">
+<figure class="shot" data-i="198">
+  <img loading="lazy" src="shots/board-lpt-printer-running.jpg" alt="LPT1 printer — running">
+  <figcaption><b>LPT1 printer — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="199">
+  <img loading="lazy" src="shots/wave-lpt-printer.jpg" alt="LPT1 printer — on the analyzer">
+  <figcaption><b>LPT1 printer — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Read the paper</b><p>Run the board and double-click the printer. <code>HELLO 8088!</code> is on the page, with
+      a character count and a tear-off button. It arrived one byte at a time through a handshake.</p></li><li><b>Watch the handshake</b><p>Add <code>~STROBE</code>, <code>BUSY</code> and <code>~ACK</code> to the analyzer. The
+      pattern per character is exact: STROBE falls, the printer raises BUSY, time passes, BUSY falls
+      and ~ACK pulses. Every parallel printer ever made spoke this dialect.</p></li><li><b>Skip the polling</b><p>Delete the <code>test</code>/<code>jz</code> wait loop and re-assemble. Characters are now
+      written while the printer is still busy and get dropped — the page comes out short or garbled.
+      Restore it and the text is perfect again. That loop is not ceremony; it is flow control.</p></li><li><b>Print something of your own</b><p>The message is a <code>db</code> list of ASCII bytes ending in zero. Replace it — 0x0A is
+      a line feed — and re-assemble.</p></li>
+      </ol></section><section id="pic-cascade" class="board" data-name="cascaded 8259as (15 irqs)">
+      <h2>Cascaded 8259As (15 IRQs)</h2>
+      <p class="one">Master and slave interrupt controllers, exactly as the PC/AT did it — fifteen usable IRQs.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="200">
+  <img loading="lazy" src="shots/board-pic-cascade.jpg" alt="Cascaded 8259As (15 IRQs)">
+  <figcaption><b>Cascaded 8259As (15 IRQs)</b> — Master and slave interrupt controllers, exactly as the PC/AT did it — fifteen usable IRQs.</figcaption>
+</figure></div>
+      <div class="story"><p>One 8259A gives eight interrupt lines. The AT needed more, so it hung a second controller
+    off the first: the slave's INT drives the master's IR2, and during the acknowledge the master puts
+    the slave's identity on the three CAS lines so the right chip supplies the vector.</p>
+    <p>Two chips, one extra bus, fifteen usable lines — and one of the master's eight sacrificed to
+    carry the slave. This board makes the whole mechanism visible with two buttons.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U7 — 8259A</td><td>Master 8259A at 20h, base vector 08h, ~SP/~EN high</td></tr><tr><td>U9 — 8259A</td><td>Slave 8259A at 40h, base vector 70h, ~SP/~EN grounded</td></tr><tr><td>D1 — BTN</td><td>A button on the master's IR4 → vector 0Ch</td></tr><tr><td>D2 — BTN</td><td>A button on the slave's IR3 → vector 73h</td></tr><tr><td>D3 — LED8</td><td>The LED port showing which vector was delivered</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="201">
+  <img loading="lazy" src="shots/board-pic-cascade-pic.jpg" alt="U7 — 8259A">
+  <figcaption><b>U7 — 8259A</b> — Master 8259A at 20h, base vector 08h, ~SP/~EN high</figcaption>
+</figure>
+<figure class="shot" data-i="202">
+  <img loading="lazy" src="shots/board-pic-cascade-slave.jpg" alt="U9 — 8259A">
+  <figcaption><b>U9 — 8259A</b> — Slave 8259A at 40h, base vector 70h, ~SP/~EN grounded</figcaption>
+</figure>
+<figure class="shot" data-i="203">
+  <img loading="lazy" src="shots/board-pic-cascade-btnm.jpg" alt="D1 — BTN">
+  <figcaption><b>D1 — BTN</b> — A button on the master's IR4 → vector 0Ch</figcaption>
+</figure>
+<figure class="shot" data-i="204">
+  <img loading="lazy" src="shots/board-pic-cascade-btns.jpg" alt="D2 — BTN">
+  <figcaption><b>D2 — BTN</b> — A button on the slave's IR3 → vector 73h</figcaption>
+</figure>
+<figure class="shot" data-i="205">
+  <img loading="lazy" src="shots/board-pic-cascade-led.jpg" alt="D3 — LED8">
+  <figcaption><b>D3 — LED8</b> — The LED port showing which vector was delivered</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Master 20h/21h</td><td>ICW3 = 04h — “a slave is on my IR2”</td></tr><tr><td>Slave 40h/41h</td><td>ICW3 = 02h — “my identity is 2”</td></tr><tr><td>CAS0-CAS2</td><td>The master broadcasts the slave's ID during the second INTA</td></tr><tr><td>Slave INT</td><td>→ master IR2</td></tr>
+        </tbody></table><h3>The program</h3><p>It installs handlers at vectors 0Ch and 73h, initializes both controllers with the full
+    ICW1-ICW4 sequence, unmasks everything, and halts. Each handler sends the right EOI sequence and
+    writes its own vector number to the LEDs.</p><pre class="code"><code>        mov al, 0x04       ; master ICW3: slave on IR2
+        out 0x21, al
+        ...
+        mov al, 0x02       ; slave ICW3: my ID is 2
+        out 0x41, al</code></pre><div class="grid">
+<figure class="shot" data-i="206">
+  <img loading="lazy" src="shots/board-pic-cascade-running.jpg" alt="Cascaded 8259As (15 IRQs) — running">
+  <figcaption><b>Cascaded 8259As (15 IRQs) — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="207">
+  <img loading="lazy" src="shots/wave-pic-cascade.jpg" alt="Cascaded 8259As (15 IRQs) — on the analyzer">
+  <figcaption><b>Cascaded 8259As (15 IRQs) — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Press both buttons</b><p>The master button shows <code>0C</code> on the LEDs — base 08h plus IR4. The slave button
+      shows <code>73</code> — base 70h plus IR3, delivered through the master. Same handshake, two
+      chips deep.</p></li><li><b>Watch the CAS bus carry an identity</b><p>Add <code>~INTA</code> and the three CAS lines to the analyzer, then press the slave
+      button. During the second INTA pulse the master drives 2 onto CAS — and only the slave whose ID
+      is 2 answers with a vector. That is the entire cascade protocol on four wires.</p></li><li><b>See the nested in-service state</b><p>Press the slave button and pause quickly, then double-click both controllers. The
+      master's ISR bit 2 is set (it is servicing the cascade) and the slave's ISR bit 3 is set (it is
+      servicing the actual request). Two chips, both in service, one interrupt.</p></li><li><b>Send the wrong EOI</b><p>Delete the master EOI from the slave's handler, leaving only the slave's own. Press the
+      slave button twice: the second press does nothing. The master still believes IR2 is in service
+      and blocks everything at that level or below — the classic cascade bug.</p></li><li><b>Move the slave</b><p>Change the master's ICW3 to <code>0x20</code> and the slave's to <code>0x05</code>, and
+      rewire the slave's INT to the master's IR5. The vector still arrives — you have just relocated
+      the cascade to a different line, exactly as a board designer would.</p></li>
+      </ol><div class="grid hero1">
+<figure class="shot" data-i="208">
+  <img loading="lazy" src="shots/lab-pic-cascade.jpg" alt="Cascaded 8259As (15 IRQs) — the guided lab">
+  <figcaption><b>Cascaded 8259As (15 IRQs) — the guided lab</b> — This board ships a numbered exercise; the ticks persist as you work through it.</figcaption>
+</figure></div></section><section id="pit-modes" class="board" data-name="8254 timer modes">
+      <h2>8254 timer modes</h2>
+      <p class="one">A free-running square wave and a hardware one-shot you trigger with a button.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="209">
+  <img loading="lazy" src="shots/board-pit-modes.jpg" alt="8254 timer modes">
+  <figcaption><b>8254 timer modes</b> — A free-running square wave and a hardware one-shot you trigger with a button.</figcaption>
+</figure></div>
+      <div class="story"><p>The 8254 has six counting modes and they are genuinely different machines. This board
+    runs two of them side by side: channel 0 in mode 3 free-running as a square wave, and channel 1 in
+    mode 1 as a retriggerable one-shot whose gate is a push button.</p>
+    <p>The one-shot is the interesting one. Press the button for any length of time and the output
+    pulse is always the same width, because the hardware — not your finger — decides the duration.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U7 — 8254</td><td>8254 timer: read-back capable, unlike the 8253</td></tr><tr><td>D1 — BTN</td><td>The button on channel 1's GATE — the one-shot trigger</td></tr><tr><td>D2 — LED8</td><td>LED bit 0 shows OUT0, bit 1 shows OUT1</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="210">
+  <img loading="lazy" src="shots/board-pit-modes-pit.jpg" alt="U7 — 8254">
+  <figcaption><b>U7 — 8254</b> — 8254 timer: read-back capable, unlike the 8253</figcaption>
+</figure>
+<figure class="shot" data-i="211">
+  <img loading="lazy" src="shots/board-pit-modes-btn.jpg" alt="D1 — BTN">
+  <figcaption><b>D1 — BTN</b> — The button on channel 1's GATE — the one-shot trigger</figcaption>
+</figure>
+<figure class="shot" data-i="212">
+  <img loading="lazy" src="shots/board-pit-modes-led.jpg" alt="D2 — LED8">
+  <figcaption><b>D2 — LED8</b> — LED bit 0 shows OUT0, bit 1 shows OUT1</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Ports 40h-43h</td><td>8254</td></tr><tr><td>Control 36h</td><td>Channel 0, mode 3, square wave</td></tr><tr><td>Control 72h</td><td>Channel 1, mode 1, hardware one-shot</td></tr><tr><td>Control E2h</td><td>Read-back — latch channel 0's status (8254 only)</td></tr>
+        </tbody></table><h3>The program</h3><p>Programs channel 0 as a mode-3 square wave with divisor 40000 (about 60 Hz), channel 1
+    as a mode-1 one-shot of 0x6000 counts, then issues a read-back command and stores the returned
+    status byte at <code>[0x100]</code> before spinning.</p><pre class="code"><code>        mov al, 0xE2       ; read-back: latch ch0 status
+        out 0x43, al
+        in  al, 0x40
+        mov [0x100], al</code></pre><div class="grid">
+<figure class="shot" data-i="213">
+  <img loading="lazy" src="shots/board-pit-modes-running.jpg" alt="8254 timer modes — running">
+  <figcaption><b>8254 timer modes — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="214">
+  <img loading="lazy" src="shots/wave-pit-modes.jpg" alt="8254 timer modes — on the analyzer">
+  <figcaption><b>8254 timer modes — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Trigger the one-shot</b><p>Run, then press and release the GATE button quickly. LED bit 1 lights for a fixed time and
+      goes out. Now hold the button down: the pulse is exactly as long as before. Press again while it
+      is still high and it retriggers, restarting the count from the top.</p></li><li><b>Measure both with cursors</b><p>Put <code>OUT0</code> and <code>OUT1</code> on the analyzer. Click to drop a cursor at the
+      start of the one-shot pulse and read the time; compare it with the square wave's period. You can
+      confirm the pulse is 0x6000 input clocks wide, exactly as programmed.</p></li><li><b>Read the read-back byte</b><p>Open the unified memory view at <code>00100</code>. That byte is channel 0's status:
+      bit 7 is the current OUT level, bit 6 the null-count flag, bits 4-5 the read/write mode, bits 1-3
+      the counting mode. This command is the 8254's headline feature over the 8253.</p></li><li><b>Change the note mid-flight</b><p>Pause, double-click the timer, and edit channel 0's reload value. Resume: the blink rate
+      changes immediately, because the counter reloads from that register every time it hits zero.</p></li>
+      </ol><div class="grid hero1">
+<figure class="shot" data-i="215">
+  <img loading="lazy" src="shots/lab-pit-modes.jpg" alt="8254 timer modes — the guided lab">
+  <figcaption><b>8254 timer modes — the guided lab</b> — This board ships a numbered exercise; the ticks persist as you work through it.</figcaption>
+</figure></div></section><section id="fixit-lab" class="board" data-name="fix this board!">
+      <h2>Fix this board!</h2>
+      <p class="one">A board wired in a hurry. The program is fine. The board is not. Find the two bugs.</p>
+      <div class="grid hero1">
+<figure class="shot" data-i="216">
+  <img loading="lazy" src="shots/board-fixit-lab.jpg" alt="Fix this board!">
+  <figcaption><b>Fix this board!</b> — A board wired in a hurry. The program is fine. The board is not. Find the two bugs.</figcaption>
+</figure></div>
+      <div class="story"><p>Everything about this board looks right. The CPU runs, the ROM is programmed, the
+    program is the same blinker that works everywhere else — and the LEDs stay dark. There are no
+    strict violations, so the simulation starts happily.</p>
+    <p>Two things are wrong, and both are the kind of thing that eats an afternoon on a real bench:
+    one is a floating input doing exactly what floating TTL inputs do, and the other is a wire that
+    works by luck. The Checks tab knows about both.</p></div><h3>The chips</h3>
+        <table><thead><tr><th>Part</th><th>What it does here</th></tr></thead><tbody>
+        <tr><td>U6 — 74LS373</td><td>The output '373 — its ~OE pin is the first bug</td></tr><tr><td>D2 — LED8</td><td>The LEDs, faithfully showing nothing</td></tr><tr><td>U2 — 8088</td><td>8088, running the program correctly the whole time</td></tr><tr><td>U3 — EPROM2764</td><td>2764 EPROM with a perfectly good blinker in it</td></tr>
+        </tbody></table><div class="grid gal">
+<figure class="shot" data-i="217">
+  <img loading="lazy" src="shots/board-fixit-lab-port.jpg" alt="U6 — 74LS373">
+  <figcaption><b>U6 — 74LS373</b> — The output '373 — its ~OE pin is the first bug</figcaption>
+</figure>
+<figure class="shot" data-i="218">
+  <img loading="lazy" src="shots/board-fixit-lab-led.jpg" alt="D2 — LED8">
+  <figcaption><b>D2 — LED8</b> — The LEDs, faithfully showing nothing</figcaption>
+</figure>
+<figure class="shot" data-i="219">
+  <img loading="lazy" src="shots/board-fixit-lab-cpu.jpg" alt="U2 — 8088">
+  <figcaption><b>U2 — 8088</b> — 8088, running the program correctly the whole time</figcaption>
+</figure>
+<figure class="shot" data-i="220">
+  <img loading="lazy" src="shots/board-fixit-lab-rom.jpg" alt="U3 — EPROM2764">
+  <figcaption><b>U3 — EPROM2764</b> — 2764 EPROM with a perfectly good blinker in it</figcaption>
+</figure></div><h3>The map</h3>
+        <table><thead><tr><th>Address / signal</th><th>What answers</th></tr></thead><tbody>
+        <tr><td>Any IO write</td><td>Latches into the '373 — which then refuses to drive its outputs</td></tr><tr><td>~RES net</td><td>Has a button but no pull-up: high only because nothing is holding it low</td></tr>
+        </tbody></table><h3>The program</h3><p>The standard blinker. It is not the problem, and proving that to yourself is part of
+    the exercise.</p><div class="grid">
+<figure class="shot" data-i="221">
+  <img loading="lazy" src="shots/board-fixit-lab-running.jpg" alt="Fix this board! — running">
+  <figcaption><b>Fix this board! — running</b> — The same board with live logic levels on every wire, LEDs lit and displays scanning.</figcaption>
+</figure>
+<figure class="shot" data-i="222">
+  <img loading="lazy" src="shots/wave-fixit-lab.jpg" alt="Fix this board! — on the analyzer">
+  <figcaption><b>Fix this board! — on the analyzer</b> — The signals this board pre-selects for you, captured while it runs.</figcaption>
+</figure></div><h3>Try this</h3><ol class="tries">
+        <li><b>Confirm the program is innocent</b><p>Run the board and open the <b>CPU</b> tab. Registers are changing, IP is moving, the
+      program is executing. Pause and double-click the '373: its latched value <i>is</i> alternating
+      between 55h and AAh. The data is arriving — it simply is not coming out.</p></li><li><b>Read the checks</b><p>Open the <b>Checks</b> tab. Two weak warnings, each expandable into an explanation. The
+      first is the floating <code>~OE</code>: an unconnected TTL input reads as logic 1, and on a '373
+      a high output-enable tri-states every output. The latch is working perfectly and showing nothing.</p></li><li><b>Fix it with one wire</b><p>Stop, wire the '373's <code>~OE</code> to GND, and run. The blinker appears. One wire
+      between a dead board and a working one — and no amount of staring at the software would ever have
+      found it.</p></li><li><b>Fix the one that “works”</b><p>The second warning is the reset button with no pull-up. It appears to work, because a
+      floating net reads high and that happens to be the inactive state. It is not a design — it is a
+      coincidence. Wire the PULLUP onto the <code>~RES</code> net and re-run the checks: clean.</p></li><li><b>Let the tool find it</b><p>Undo your fixes and press <b>⚡ complete</b> instead. The repair scan clones the board,
+      re-runs each chip's standard hookup on the clone, and reports precisely what is missing — then
+      restores it if you accept.</p></li>
+      </ol><div class="grid hero1">
+<figure class="shot" data-i="223">
+  <img loading="lazy" src="shots/lab-fixit-lab.jpg" alt="Fix this board! — the guided lab">
+  <figcaption><b>Fix this board! — the guided lab</b> — This board ships a numbered exercise; the ticks persist as you work through it.</figcaption>
+</figure></div></section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

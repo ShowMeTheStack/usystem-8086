@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en" data-page="autowiring">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autowiring — µSystem 8086</title>
+<meta name="description" content="The planner that watches the whole board, offers only designs that are actually completable, and repairs damage you did not mean to do.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html" class="here">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>Autowiring</h1>
+    <p class="lede">The planner that watches the whole board, offers only designs that are actually completable, and repairs damage you did not mean to do.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#whispers">Whispers</a><a href="#clocking-a-cpu">Clocking a CPU</a><a href="#completing-the-board">Completing the board</a><a href="#repair">Repair</a><a href="#exact-addresses">Exact addresses</a><a href="#design-checks">Design checks</a>
+      <div class="tocmeta">20 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>Wiring an 8088 to a memory chip is twenty-odd wires of pure ceremony: latch the multiplexed address,
+      decode a chip select, qualify the strobes. The planner does that ceremony for you — but it is careful
+      about <em>when</em> it speaks.</p>
+      <p>The rule is simple: <strong>it only ever offers designs that can be completed right now.</strong>
+      After every placement it re-examines the entire board and enumerates what has become possible, with the
+      new part as the subject or as the missing piece something else was waiting for. If nothing is possible,
+      it says nothing — it whispers in the hint bar instead of interrupting you with a dialog that leads
+      nowhere.</p></div><section id="whispers" class="sub" data-name="whispers">
+      <h2>Whispers</h2>
+      <p>A whisper is the hint bar telling you what part would unlock the board. It never
+        interrupts, never steals focus, and disappears the moment it stops being true.</p>
+      <div class="grid">
+<figure class="shot" data-i="399">
+  <img loading="lazy" src="shots/whisper-hint.jpg" alt="A whisper, not a popup">
+  <figcaption><b>A whisper, not a popup</b> — Parts that cannot be wired yet never interrupt you. The hint bar whispers what is missing — here, that a CPU would unlock every one of these chips.</figcaption>
+</figure>
+<figure class="shot" data-i="400">
+  <img loading="lazy" src="shots/whisper-board.jpg" alt="Five orphaned parts">
+  <figcaption><b>Five orphaned parts</b> — Nothing is wired and nothing is nagging. The planner is watching the board and waiting for the piece that makes a design possible.</figcaption>
+</figure>
+<figure class="shot" data-i="401">
+  <img loading="lazy" src="shots/whisper-cpu.jpg" alt="The whisper follows the board">
+  <figcaption><b>The whisper follows the board</b> — Adding a CPU changes the whisper: now the one missing part is the clock generator.</figcaption>
+</figure></div>
+    </section><section id="clocking-a-cpu" class="sub" data-name="clocking a cpu">
+      <h2>Clocking a CPU</h2>
+      <p>Clocking is the first real decision on any board, so it gets a proper dialog:
+        which CPUs to clock, and for each one <strong>minimum mode</strong> (simple direct bus signals, the
+        classic kit arrangement) or <strong>maximum mode</strong> (which creates and wires an 8288 bus
+        controller and straps <code>MN/~MX</code> low — the IBM PC arrangement).</p>
+      <div class="grid">
+<figure class="shot" data-i="402">
+  <img loading="lazy" src="shots/clock-checklist.jpg" alt="Clock CPUs — the checklist">
+  <figcaption><b>Clock CPUs — the checklist</b> — The 8284A arrives and the planner offers every CPU it can clock: a checkbox each, and a per-CPU choice of minimum or maximum mode.</figcaption>
+</figure>
+<figure class="shot" data-i="403">
+  <img loading="lazy" src="shots/clock-mode-select.jpg" alt="Minimum or maximum mode">
+  <figcaption><b>Minimum or maximum mode</b> — Maximum mode straps MN/~MX low, creates an 8288 bus controller and wires the status lines — the IBM PC arrangement.</figcaption>
+</figure></div>
+    </section><section id="completing-the-board" class="sub" data-name="completing the board">
+      <h2>Completing the board</h2>
+      <p>The moment a CPU comes alive, everything that was waiting for a bus becomes
+        possible at once. Rather than twenty separate popups, you get one consolidated dialog listing every
+        chip that can be wired now, each with a checkbox and — where there is a choice — a dropdown. The batch
+        runs in dependency order, so a floppy controller wired after the interrupt controller automatically
+        picks up IRQ 6 and DMA channel 2. The whole batch is a single undo step.</p>
+        <p>You can summon the same dialog at any time with <strong>⚡ complete</strong>.</p>
+      <div class="grid">
+<figure class="shot" data-i="404">
+  <img loading="lazy" src="shots/sweep-dialog.jpg" alt="Complete the board?">
+  <figcaption><b>Complete the board?</b> — The moment a CPU comes alive, every chip that can now be wired is offered at once — glue chips and counterpart parts created where needed, in dependency order.</figcaption>
+</figure>
+<figure class="shot" data-i="405">
+  <img loading="lazy" src="shots/sweep-result.jpg" alt="One click later">
+  <figcaption><b>One click later</b> — Address latches, decoders and qualified strobes synthesized; every device on its own IO window. The whole batch is one undo step.</figcaption>
+</figure>
+<figure class="shot" data-i="406">
+  <img loading="lazy" src="shots/sweep-hint.jpg" alt="What just happened">
+  <figcaption><b>What just happened</b> — The hint bar names every chip that was wired and reminds you that a single undo reverts the entire batch.</figcaption>
+</figure>
+<figure class="shot" data-i="407">
+  <img loading="lazy" src="shots/sweep-glue-u7.jpg" alt="U7 — synthesized glue">
+  <figcaption><b>U7 — synthesized glue</b> — The planner created this 74LS138 and wired it. Everything it adds is an ordinary component with ordinary wires: inspectable, checkable and editable.</figcaption>
+</figure>
+<figure class="shot" data-i="408">
+  <img loading="lazy" src="shots/sweep-glue-u8.jpg" alt="U8 — synthesized glue">
+  <figcaption><b>U8 — synthesized glue</b> — The planner created this 74LS373 and wired it. Everything it adds is an ordinary component with ordinary wires: inspectable, checkable and editable.</figcaption>
+</figure>
+<figure class="shot" data-i="409">
+  <img loading="lazy" src="shots/sweep-glue-u9.jpg" alt="U9 — synthesized glue">
+  <figcaption><b>U9 — synthesized glue</b> — The planner created this 74LS138 and wired it. Everything it adds is an ordinary component with ordinary wires: inspectable, checkable and editable.</figcaption>
+</figure>
+<figure class="shot" data-i="410">
+  <img loading="lazy" src="shots/sweep-glue-u10.jpg" alt="U10 — synthesized glue">
+  <figcaption><b>U10 — synthesized glue</b> — The planner created this 74LS373 and wired it. Everything it adds is an ordinary component with ordinary wires: inspectable, checkable and editable.</figcaption>
+</figure>
+<figure class="shot" data-i="411">
+  <img loading="lazy" src="shots/sweep-glue-u11.jpg" alt="U11 — synthesized glue">
+  <figcaption><b>U11 — synthesized glue</b> — The planner created this 74LS32 and wired it. Everything it adds is an ordinary component with ordinary wires: inspectable, checkable and editable.</figcaption>
+</figure></div>
+    </section><section id="repair" class="sub" data-name="repair">
+      <h2>Repair</h2>
+      <p>Delete one lane of a live bus and the hint bar says so immediately — seven eighths of a
+        data bus is nobody's intention. Press <strong>⚡ complete</strong> and the board is scanned for damage
+        by cloning it, re-running each chip's own hookup on the clone, and diffing: <em>the wires it would add
+        are exactly the ones missing.</em> Damage that looks accidental arrives pre-ticked; whole connections
+        you removed on purpose are offered unticked, because you may have meant it.</p>
+      <div class="grid">
+<figure class="shot" data-i="412">
+  <img loading="lazy" src="shots/repair-whisper.jpg" alt="A snipped bus lane is noticed">
+  <figcaption><b>A snipped bus lane is noticed</b> — Delete one lane of a live bus and the hint bar says so immediately — seven eighths of a data bus is nobody's intention.</figcaption>
+</figure>
+<figure class="shot" data-i="413">
+  <img loading="lazy" src="shots/repair-dialog.jpg" alt="⚡ complete offers the repair">
+  <figcaption><b>⚡ complete offers the repair</b> — The board is scanned by cloning it, re-running each chip's own hookup on the clone, and diffing — the wires it would add are exactly the ones missing. Accidental-looking damage arrives pre-ticked.</figcaption>
+</figure></div>
+    </section><section id="exact-addresses" class="sub" data-name="exact addresses">
+      <h2>Exact addresses</h2>
+      <p>When "somewhere in this 128K window" is not good enough, the range calculator
+        synthesizes an exact decoder for a base address you choose — then <em>proves</em> it by re-probing the
+        netlist and reporting where the chip actually answers.</p>
+      <div class="grid">
+<figure class="shot" data-i="414">
+  <img loading="lazy" src="shots/rangecalc.jpg" alt="The range calculator">
+  <figcaption><b>The range calculator</b> — It first shows where the chip answers right now, mirrors included. Type the base address you want and it synthesizes a decoder to put it exactly there.</figcaption>
+</figure>
+<figure class="shot" data-i="415">
+  <img loading="lazy" src="shots/rangecalc-proved.jpg" alt="Proved, not promised">
+  <figcaption><b>Proved, not promised</b> — The result is verified by re-probing the netlist through the real decode gates: the green line is a measurement, not a calculation.</figcaption>
+</figure></div>
+    </section><section id="design-checks" class="sub" data-name="design checks">
+      <h2>Design checks</h2>
+      <p>Strict violations block the simulation before it starts; weak ones are warnings you
+        can run with. Every check comes with an explanation of what a bench technician would see.</p>
+      <div class="grid">
+<figure class="shot" data-i="416">
+  <img loading="lazy" src="shots/drc-modal.jpg" alt="The design check stops you">
+  <figcaption><b>The design check stops you</b> — Strict violations — a VCC/GND short, two outputs fighting, a missing required pin — block the simulation and are explained before anything runs.</figcaption>
+</figure>
+<figure class="shot" data-i="417">
+  <img loading="lazy" src="shots/drc-panel.jpg" alt="The Checks panel">
+  <figcaption><b>The Checks panel</b> — Every check, strict and advisory, each expandable into an explanation of what a bench technician would see.</figcaption>
+</figure>
+<figure class="shot" data-i="418">
+  <img loading="lazy" src="shots/drc-fixit.jpg" alt="The repair lab">
+  <figcaption><b>The repair lab</b> — One shipped board is deliberately broken in two ways that a scope would find and a schematic would not. The checks tell you exactly what a technician would notice.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en" data-page="running">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running a board — µSystem 8086</title>
+<meta name="description" content="Start, pause, step by cycle or instruction, rewind through history, and run at real 8088 speed.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html" class="here">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>Running a board</h1>
+    <p class="lede">Start, pause, step by cycle or instruction, rewind through history, and run at real 8088 speed.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#watching-the-cpu">Watching the CPU</a><a href="#stepping">Stepping</a><a href="#watching-chips">Watching chips</a><a href="#turbo">Turbo</a><a href="#rewind">Rewind</a>
+      <div class="tocmeta">12 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>The speed slider spans ten stops from two steps per second — slow enough to watch a bus cycle
+      assemble itself — up to <em>max</em>, where the compiled fast path reaches real 8088 speed. Whatever
+      speed you pick, the instruction stream is identical; only the wall-clock pacing changes.</p></div><section id="watching-the-cpu" class="sub" data-name="watching the cpu">
+      <h2>Watching the CPU</h2>
+      <p>The CPU panel is the machine's architectural state: registers, segment
+        registers, individual flags, the prefetch queue with a live disassembly of what it holds, and the
+        current bus cycle. Pause and every field becomes editable — including clicking a flag to toggle
+        it.</p>
+      <div class="grid">
+<figure class="shot" data-i="419">
+  <img loading="lazy" src="shots/cpu-panel.jpg" alt="The CPU panel">
+  <figcaption><b>The CPU panel</b> — Registers, segment registers, individual flags, the prefetch queue with a live disassembly of what it holds, and the current bus cycle.</figcaption>
+</figure>
+<figure class="shot" data-i="420">
+  <img loading="lazy" src="shots/cpu-edit.jpg" alt="Registers are editable">
+  <figcaption><b>Registers are editable</b> — Pause and every field becomes editable — type a new value into any register, or click a flag to toggle it. Writing CS even flushes the prefetch queue, exactly like the real chip.</figcaption>
+</figure></div>
+    </section><section id="stepping" class="sub" data-name="stepping">
+      <h2>Stepping</h2>
+      <p><strong>⭢ cycle</strong> advances one clock half-step; <strong>⭢ insn</strong> runs
+        exactly one instruction. Cycle stepping is how you see a bus cycle for what it is: address out with
+        ALE, strobe low, data sampled, strobe high.</p>
+      <div class="grid">
+<figure class="shot" data-i="421">
+  <img loading="lazy" src="shots/step-cycle-0.jpg" alt="Cycle step 1">
+  <figcaption><b>Cycle step 1</b> — ⭢ cycle advances one clock half-step. Watch the bus cycle assemble itself across four clocks: address out with ALE, strobe low, data sampled, strobe high.</figcaption>
+</figure>
+<figure class="shot" data-i="422">
+  <img loading="lazy" src="shots/step-cycle-1.jpg" alt="Cycle step 2">
+  <figcaption><b>Cycle step 2</b> — ⭢ cycle advances one clock half-step. Watch the bus cycle assemble itself across four clocks: address out with ALE, strobe low, data sampled, strobe high.</figcaption>
+</figure>
+<figure class="shot" data-i="423">
+  <img loading="lazy" src="shots/step-cycle-2.jpg" alt="Cycle step 3">
+  <figcaption><b>Cycle step 3</b> — ⭢ cycle advances one clock half-step. Watch the bus cycle assemble itself across four clocks: address out with ALE, strobe low, data sampled, strobe high.</figcaption>
+</figure>
+<figure class="shot" data-i="424">
+  <img loading="lazy" src="shots/step-cycle-3.jpg" alt="Cycle step 4">
+  <figcaption><b>Cycle step 4</b> — ⭢ cycle advances one clock half-step. Watch the bus cycle assemble itself across four clocks: address out with ALE, strobe low, data sampled, strobe high.</figcaption>
+</figure></div>
+    </section><section id="watching-chips" class="sub" data-name="watching chips">
+      <h2>Watching chips</h2>
+      <p>The Chip panel shows any selected chip's internal state — editable while paused —
+        plus a live badge for every pin, colour-coded by logic value.</p>
+      <div class="grid">
+<figure class="shot" data-i="425">
+  <img loading="lazy" src="shots/chip-panel.jpg" alt="The Chip panel">
+  <figcaption><b>The Chip panel</b> — Any chip's internal state — editable while paused — plus a live badge for every pin, colour-coded by logic value.</figcaption>
+</figure></div>
+    </section><section id="turbo" class="sub" data-name="turbo">
+      <h2>Turbo</h2>
+      <p><strong>⚡ turbo</strong> compiles the board's clock tree and batches CPU execution, reaching
+        around 5 MHz of simulated 8088. Memory goes through the proved map and IO still goes through real
+        pins, so behaviour is bit-identical — the one cost is that waveform capture pauses while turbo is
+        engaged.</p>
+      <div class="grid">
+<figure class="shot" data-i="426">
+  <img loading="lazy" src="shots/turbo-status.jpg" alt="Turbo: real-time speed">
+  <figcaption><b>Turbo: real-time speed</b> — ⚡ turbo compiles the clock tree and batches the CPU, reaching around 5 MHz of simulated 8088. Memory goes through the proved map, IO still through real pins — the instruction stream is bit-identical.</figcaption>
+</figure>
+<figure class="shot" data-i="427">
+  <img loading="lazy" src="shots/turbo-waveform.jpg" alt="Capture pauses in turbo">
+  <figcaption><b>Capture pauses in turbo</b> — The one cost of turbo is waveform capture, and the analyzer says so plainly. Leave turbo or pause and it resumes.</figcaption>
+</figure></div>
+    </section><section id="rewind" class="sub" data-name="rewind">
+      <h2>Rewind</h2>
+      <p>The rewind slider travels backwards through recorded history. This is not a replay: the
+        entire machine — registers, memory, every chip's internal state — returns to how it was, and you can
+        run forward again from there.</p>
+      <div class="grid">
+<figure class="shot" data-i="428">
+  <img loading="lazy" src="shots/rewind-0-15.jpg" alt="Rewound to 15%">
+  <figcaption><b>Rewound to 15%</b> — The rewind slider travels backwards through recorded history. This is not a replay: registers, memory and every chip's internal state return to how they were, and you can run forward again from there.</figcaption>
+</figure>
+<figure class="shot" data-i="429">
+  <img loading="lazy" src="shots/rewind-0-45.jpg" alt="Rewound to 45%">
+  <figcaption><b>Rewound to 45%</b> — The rewind slider travels backwards through recorded history. This is not a replay: registers, memory and every chip's internal state return to how they were, and you can run forward again from there.</figcaption>
+</figure>
+<figure class="shot" data-i="430">
+  <img loading="lazy" src="shots/rewind-0-8.jpg" alt="Rewound to 80%">
+  <figcaption><b>Rewound to 80%</b> — The rewind slider travels backwards through recorded history. This is not a replay: registers, memory and every chip's internal state return to how they were, and you can run forward again from there.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

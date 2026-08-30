@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en" data-page="chips">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The chip library — µSystem 8086</title>
+<meta name="description" content="Every modelled part: pinouts, what each one simulates, and the programmer's views that open when you double-click a running chip.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html" class="here">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>The chip library</h1>
+    <p class="lede">Every modelled part: pinouts, what each one simulates, and the programmer's views that open when you double-click a running chip.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#cpu">CPU</a><a href="#pin-tables">Pin tables</a><a href="#system">System</a><a href="#power">Power</a><a href="#clock">Clock</a><a href="#i-o">I/O</a><a href="#logic">Logic</a><a href="#memory">Memory</a><a href="#video">Video</a><a href="#storage">Storage</a><a href="#programmer-s-views">Programmer's views</a><a href="#per-chip-dialogs">Per-chip dialogs</a>
+      <div class="tocmeta">175 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>Parts fall into nine categories — Power, Clock, I/O, Logic, Memory, System, Video, Storage and CPU.
+      Each is a real behavioural model evaluated at its pins, not a black box: the '138 decodes, the '373
+      latches on the level, the 8259A arbitrates priority and delivers a vector through a real INTA sequence.</p>
+      <p>Double-click a chip <em>while the simulation runs</em> and you get its <strong>programmer's
+      view</strong>: the register model as bit grids and lamps, live while running and editable while paused.
+      That is where you watch an interrupt mask block a request, or a timer's count race downward.</p></div><div class="filterbar"><input id="filter" placeholder="filter — type a board, chip or theme name" autocomplete="off"><span id="filterCount"></span></div><section id="cpu" class="sub" data-name="cpu">
+      <h2>CPU</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="224">
+  <img loading="lazy" src="shots/chip-8086-pinout.jpg" alt="8086 — 8086 CPU (min mode)">
+  <figcaption><b>8086 — 8086 CPU (min mode)</b> — 8086 CPU (min mode) — 40 pins, category CPU.</figcaption>
+</figure>
+<figure class="shot" data-i="225">
+  <img loading="lazy" src="shots/chip-8086-detail.jpg" alt="8086 — pin detail">
+  <figcaption><b>8086 — pin detail</b> — 8086 CPU (min mode): pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="226">
+  <img loading="lazy" src="shots/chip-8088-pinout.jpg" alt="8088 — 8088 CPU (min mode)">
+  <figcaption><b>8088 — 8088 CPU (min mode)</b> — 8088 CPU (min mode) — 40 pins, category CPU.</figcaption>
+</figure>
+<figure class="shot" data-i="227">
+  <img loading="lazy" src="shots/chip-8088-detail.jpg" alt="8088 — pin detail">
+  <figcaption><b>8088 — pin detail</b> — 8088 CPU (min mode): pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure></div>
+    </section><section id="pin-tables" class="sub" data-name="pin tables">
+      <h2>Pin tables</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="228">
+  <img loading="lazy" src="shots/chippanel-8086.jpg" alt="8086 — pin table">
+  <figcaption><b>8086 — pin table</b> — Every pin of the 8086 CPU (min mode) with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="229">
+  <img loading="lazy" src="shots/chippanel-8088.jpg" alt="8088 — pin table">
+  <figcaption><b>8088 — pin table</b> — Every pin of the 8088 CPU (min mode) with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="230">
+  <img loading="lazy" src="shots/chippanel-8253.jpg" alt="8253 — pin table">
+  <figcaption><b>8253 — pin table</b> — Every pin of the 8253 timer (3ch) with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="231">
+  <img loading="lazy" src="shots/chippanel-8254.jpg" alt="8254 — pin table">
+  <figcaption><b>8254 — pin table</b> — Every pin of the 8254 timer (read-back) with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="232">
+  <img loading="lazy" src="shots/chippanel-8255.jpg" alt="8255 — pin table">
+  <figcaption><b>8255 — pin table</b> — Every pin of the 8255 PPI (mode 0) with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="233">
+  <img loading="lazy" src="shots/chippanel-8288.jpg" alt="8288 — pin table">
+  <figcaption><b>8288 — pin table</b> — Every pin of the 8288 bus controller with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="234">
+  <img loading="lazy" src="shots/chippanel-8289.jpg" alt="8289 — pin table">
+  <figcaption><b>8289 — pin table</b> — Every pin of the 8289 bus arbiter with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="235">
+  <img loading="lazy" src="shots/chippanel-vcc.jpg" alt="VCC — pin table">
+  <figcaption><b>VCC — pin table</b> — Every pin of the VCC rail with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="236">
+  <img loading="lazy" src="shots/chippanel-gnd.jpg" alt="GND — pin table">
+  <figcaption><b>GND — pin table</b> — Every pin of the GND rail with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="237">
+  <img loading="lazy" src="shots/chippanel-netlabel.jpg" alt="NETLABEL — pin table">
+  <figcaption><b>NETLABEL — pin table</b> — Every pin of the Net label with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="238">
+  <img loading="lazy" src="shots/chippanel-pullup.jpg" alt="PULLUP — pin table">
+  <figcaption><b>PULLUP — pin table</b> — Every pin of the Pull-up 4.7k with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="239">
+  <img loading="lazy" src="shots/chippanel-xtal.jpg" alt="XTAL — pin table">
+  <figcaption><b>XTAL — pin table</b> — Every pin of the Crystal with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="240">
+  <img loading="lazy" src="shots/chippanel-osc.jpg" alt="OSC — pin table">
+  <figcaption><b>OSC — pin table</b> — Every pin of the Clock module with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="241">
+  <img loading="lazy" src="shots/chippanel-led.jpg" alt="LED — pin table">
+  <figcaption><b>LED — pin table</b> — Every pin of the LED with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="242">
+  <img loading="lazy" src="shots/chippanel-led8.jpg" alt="LED8 — pin table">
+  <figcaption><b>LED8 — pin table</b> — Every pin of the LED bar x8 with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="243">
+  <img loading="lazy" src="shots/chippanel-seg7.jpg" alt="SEG7 — pin table">
+  <figcaption><b>SEG7 — pin table</b> — Every pin of the 7-segment (CC) with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="244">
+  <img loading="lazy" src="shots/chippanel-sw8.jpg" alt="SW8 — pin table">
+  <figcaption><b>SW8 — pin table</b> — Every pin of the DIP switch x8 with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="245">
+  <img loading="lazy" src="shots/chippanel-btn.jpg" alt="BTN — pin table">
+  <figcaption><b>BTN — pin table</b> — Every pin of the Push button with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="246">
+  <img loading="lazy" src="shots/chippanel-74ls00.jpg" alt="74LS00 — pin table">
+  <figcaption><b>74LS00 — pin table</b> — Every pin of the Quad 2-in NAND with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="247">
+  <img loading="lazy" src="shots/chippanel-74ls02.jpg" alt="74LS02 — pin table">
+  <figcaption><b>74LS02 — pin table</b> — Every pin of the Quad 2-in NOR with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="248">
+  <img loading="lazy" src="shots/chippanel-74ls08.jpg" alt="74LS08 — pin table">
+  <figcaption><b>74LS08 — pin table</b> — Every pin of the Quad 2-in AND with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="249">
+  <img loading="lazy" src="shots/chippanel-74ls32.jpg" alt="74LS32 — pin table">
+  <figcaption><b>74LS32 — pin table</b> — Every pin of the Quad 2-in OR with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="250">
+  <img loading="lazy" src="shots/chippanel-74ls86.jpg" alt="74LS86 — pin table">
+  <figcaption><b>74LS86 — pin table</b> — Every pin of the Quad 2-in XOR with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="251">
+  <img loading="lazy" src="shots/chippanel-74ls04.jpg" alt="74LS04 — pin table">
+  <figcaption><b>74LS04 — pin table</b> — Every pin of the Hex inverter with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="252">
+  <img loading="lazy" src="shots/chippanel-74ls138.jpg" alt="74LS138 — pin table">
+  <figcaption><b>74LS138 — pin table</b> — Every pin of the 3-to-8 decoder with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="253">
+  <img loading="lazy" src="shots/chippanel-74ls139.jpg" alt="74LS139 — pin table">
+  <figcaption><b>74LS139 — pin table</b> — Every pin of the Dual 2-to-4 decoder with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="254">
+  <img loading="lazy" src="shots/chippanel-74ls373.jpg" alt="74LS373 — pin table">
+  <figcaption><b>74LS373 — pin table</b> — Every pin of the Octal transparent latch with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="255">
+  <img loading="lazy" src="shots/chippanel-74ls374.jpg" alt="74LS374 — pin table">
+  <figcaption><b>74LS374 — pin table</b> — Every pin of the Octal D flip-flop with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="256">
+  <img loading="lazy" src="shots/chippanel-74ls245.jpg" alt="74LS245 — pin table">
+  <figcaption><b>74LS245 — pin table</b> — Every pin of the Octal bus transceiver with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="257">
+  <img loading="lazy" src="shots/chippanel-74ls244.jpg" alt="74LS244 — pin table">
+  <figcaption><b>74LS244 — pin table</b> — Every pin of the Octal buffer with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="258">
+  <img loading="lazy" src="shots/chippanel-74ls157.jpg" alt="74LS157 — pin table">
+  <figcaption><b>74LS157 — pin table</b> — Every pin of the Quad 2:1 mux with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="259">
+  <img loading="lazy" src="shots/chippanel-74ls74.jpg" alt="74LS74 — pin table">
+  <figcaption><b>74LS74 — pin table</b> — Every pin of the Dual D flip-flop with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="260">
+  <img loading="lazy" src="shots/chippanel-74ls393.jpg" alt="74LS393 — pin table">
+  <figcaption><b>74LS393 — pin table</b> — Every pin of the Dual 4-bit ripple counter with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="261">
+  <img loading="lazy" src="shots/chippanel-sram6264.jpg" alt="SRAM6264 — pin table">
+  <figcaption><b>SRAM6264 — pin table</b> — Every pin of the 6264 SRAM 8Kx8 with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="262">
+  <img loading="lazy" src="shots/chippanel-sram62256.jpg" alt="SRAM62256 — pin table">
+  <figcaption><b>SRAM62256 — pin table</b> — Every pin of the 62256 SRAM 32Kx8 with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="263">
+  <img loading="lazy" src="shots/chippanel-sram628512.jpg" alt="SRAM628512 — pin table">
+  <figcaption><b>SRAM628512 — pin table</b> — Every pin of the 628512 SRAM 512Kx8 with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="264">
+  <img loading="lazy" src="shots/chippanel-eprom2764.jpg" alt="EPROM2764 — pin table">
+  <figcaption><b>EPROM2764 — pin table</b> — Every pin of the 2764 EPROM 8Kx8 with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="265">
+  <img loading="lazy" src="shots/chippanel-eprom27128.jpg" alt="EPROM27128 — pin table">
+  <figcaption><b>EPROM27128 — pin table</b> — Every pin of the 27128 EPROM 16Kx8 with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="266">
+  <img loading="lazy" src="shots/chippanel-eprom27256.jpg" alt="EPROM27256 — pin table">
+  <figcaption><b>EPROM27256 — pin table</b> — Every pin of the 27256 EPROM 32Kx8 with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="267">
+  <img loading="lazy" src="shots/chippanel-8284a.jpg" alt="8284A — pin table">
+  <figcaption><b>8284A — pin table</b> — Every pin of the 8284A clock generator with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="268">
+  <img loading="lazy" src="shots/chippanel-8259a.jpg" alt="8259A — pin table">
+  <figcaption><b>8259A — pin table</b> — Every pin of the 8259A interrupt controller with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="269">
+  <img loading="lazy" src="shots/chippanel-hgc.jpg" alt="HGC — pin table">
+  <figcaption><b>HGC — pin table</b> — Every pin of the Hercules video card with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="270">
+  <img loading="lazy" src="shots/chippanel-crt.jpg" alt="CRT — pin table">
+  <figcaption><b>CRT — pin table</b> — Every pin of the Monochrome CRT monitor with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="271">
+  <img loading="lazy" src="shots/chippanel-xtkbd.jpg" alt="XTKBD — pin table">
+  <figcaption><b>XTKBD — pin table</b> — Every pin of the XT keyboard with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="272">
+  <img loading="lazy" src="shots/chippanel-kbdshift.jpg" alt="KBDSHIFT — pin table">
+  <figcaption><b>KBDSHIFT — pin table</b> — Every pin of the Keyboard shift register ('322+FF) with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="273">
+  <img loading="lazy" src="shots/chippanel-8237a.jpg" alt="8237A — pin table">
+  <figcaption><b>8237A — pin table</b> — Every pin of the 8237A DMA controller with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="274">
+  <img loading="lazy" src="shots/chippanel-upd765.jpg" alt="UPD765 — pin table">
+  <figcaption><b>UPD765 — pin table</b> — Every pin of the µPD765 floppy controller with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="275">
+  <img loading="lazy" src="shots/chippanel-xtide.jpg" alt="XTIDE — pin table">
+  <figcaption><b>XTIDE — pin table</b> — Every pin of the XT-IDE card + fixed disk with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="276">
+  <img loading="lazy" src="shots/chippanel-com8250.jpg" alt="COM8250 — pin table">
+  <figcaption><b>COM8250 — pin table</b> — Every pin of the 8250 UART (COM1 card) with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="277">
+  <img loading="lazy" src="shots/chippanel-lpt378.jpg" alt="LPT378 — pin table">
+  <figcaption><b>LPT378 — pin table</b> — Every pin of the LPT1 printer adapter with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="278">
+  <img loading="lazy" src="shots/chippanel-printer.jpg" alt="PRINTER — pin table">
+  <figcaption><b>PRINTER — pin table</b> — Every pin of the Dot-matrix printer with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure>
+<figure class="shot" data-i="279">
+  <img loading="lazy" src="shots/chippanel-spkr.jpg" alt="SPKR — pin table">
+  <figcaption><b>SPKR — pin table</b> — Every pin of the Speaker with its kind, what it is connected to, and a ranked dropdown of what it could connect to.</figcaption>
+</figure></div>
+    </section><section id="system" class="sub" data-name="system">
+      <h2>System</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="280">
+  <img loading="lazy" src="shots/chip-8253-pinout.jpg" alt="8253 — 8253 timer (3ch)">
+  <figcaption><b>8253 — 8253 timer (3ch)</b> — 8253 timer (3ch) — 24 pins, category System. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="281">
+  <img loading="lazy" src="shots/chip-8253-detail.jpg" alt="8253 — pin detail">
+  <figcaption><b>8253 — pin detail</b> — 8253 timer (3ch): pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="282">
+  <img loading="lazy" src="shots/chip-8254-pinout.jpg" alt="8254 — 8254 timer (read-back)">
+  <figcaption><b>8254 — 8254 timer (read-back)</b> — 8254 timer (read-back) — 24 pins, category System. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="283">
+  <img loading="lazy" src="shots/chip-8254-detail.jpg" alt="8254 — pin detail">
+  <figcaption><b>8254 — pin detail</b> — 8254 timer (read-back): pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="284">
+  <img loading="lazy" src="shots/chip-8255-pinout.jpg" alt="8255 — 8255 PPI (mode 0)">
+  <figcaption><b>8255 — 8255 PPI (mode 0)</b> — 8255 PPI (mode 0) — 40 pins, category System.</figcaption>
+</figure>
+<figure class="shot" data-i="285">
+  <img loading="lazy" src="shots/chip-8255-detail.jpg" alt="8255 — pin detail">
+  <figcaption><b>8255 — pin detail</b> — 8255 PPI (mode 0): pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="286">
+  <img loading="lazy" src="shots/chip-8288-pinout.jpg" alt="8288 — 8288 bus controller">
+  <figcaption><b>8288 — 8288 bus controller</b> — 8288 bus controller — 20 pins, category System. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="287">
+  <img loading="lazy" src="shots/chip-8288-detail.jpg" alt="8288 — pin detail">
+  <figcaption><b>8288 — pin detail</b> — 8288 bus controller: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="288">
+  <img loading="lazy" src="shots/chip-8289-pinout.jpg" alt="8289 — 8289 bus arbiter">
+  <figcaption><b>8289 — 8289 bus arbiter</b> — 8289 bus arbiter — 9 pins, category System. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="289">
+  <img loading="lazy" src="shots/chip-8289-detail.jpg" alt="8289 — pin detail">
+  <figcaption><b>8289 — pin detail</b> — 8289 bus arbiter: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="290">
+  <img loading="lazy" src="shots/chip-8284a-pinout.jpg" alt="8284A — 8284A clock generator">
+  <figcaption><b>8284A — 8284A clock generator</b> — 8284A clock generator — 18 pins, category System.</figcaption>
+</figure>
+<figure class="shot" data-i="291">
+  <img loading="lazy" src="shots/chip-8284a-detail.jpg" alt="8284A — pin detail">
+  <figcaption><b>8284A — pin detail</b> — 8284A clock generator: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="292">
+  <img loading="lazy" src="shots/chip-8259a-pinout.jpg" alt="8259A — 8259A interrupt controller">
+  <figcaption><b>8259A — 8259A interrupt controller</b> — 8259A interrupt controller — 28 pins, category System.</figcaption>
+</figure>
+<figure class="shot" data-i="293">
+  <img loading="lazy" src="shots/chip-8259a-detail.jpg" alt="8259A — pin detail">
+  <figcaption><b>8259A — pin detail</b> — 8259A interrupt controller: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="294">
+  <img loading="lazy" src="shots/chip-8237a-pinout.jpg" alt="8237A — 8237A DMA controller">
+  <figcaption><b>8237A — 8237A DMA controller</b> — 8237A DMA controller — 32 pins, category System. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="295">
+  <img loading="lazy" src="shots/chip-8237a-detail.jpg" alt="8237A — pin detail">
+  <figcaption><b>8237A — pin detail</b> — 8237A DMA controller: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure></div>
+    </section><section id="power" class="sub" data-name="power">
+      <h2>Power</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="296">
+  <img loading="lazy" src="shots/chip-vcc-pinout.jpg" alt="VCC — VCC rail">
+  <figcaption><b>VCC — VCC rail</b> — VCC rail — 1 pins, category Power.</figcaption>
+</figure>
+<figure class="shot" data-i="297">
+  <img loading="lazy" src="shots/chip-vcc-detail.jpg" alt="VCC — pin detail">
+  <figcaption><b>VCC — pin detail</b> — VCC rail: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="298">
+  <img loading="lazy" src="shots/chip-gnd-pinout.jpg" alt="GND — GND rail">
+  <figcaption><b>GND — GND rail</b> — GND rail — 1 pins, category Power.</figcaption>
+</figure>
+<figure class="shot" data-i="299">
+  <img loading="lazy" src="shots/chip-gnd-detail.jpg" alt="GND — pin detail">
+  <figcaption><b>GND — pin detail</b> — GND rail: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="300">
+  <img loading="lazy" src="shots/chip-netlabel-pinout.jpg" alt="NETLABEL — Net label">
+  <figcaption><b>NETLABEL — Net label</b> — Net label — 1 pins, category Power.</figcaption>
+</figure>
+<figure class="shot" data-i="301">
+  <img loading="lazy" src="shots/chip-netlabel-detail.jpg" alt="NETLABEL — pin detail">
+  <figcaption><b>NETLABEL — pin detail</b> — Net label: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="302">
+  <img loading="lazy" src="shots/chip-pullup-pinout.jpg" alt="PULLUP — Pull-up 4.7k">
+  <figcaption><b>PULLUP — Pull-up 4.7k</b> — Pull-up 4.7k — 1 pins, category Power.</figcaption>
+</figure>
+<figure class="shot" data-i="303">
+  <img loading="lazy" src="shots/chip-pullup-detail.jpg" alt="PULLUP — pin detail">
+  <figcaption><b>PULLUP — pin detail</b> — Pull-up 4.7k: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure></div>
+    </section><section id="clock" class="sub" data-name="clock">
+      <h2>Clock</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="304">
+  <img loading="lazy" src="shots/chip-xtal-pinout.jpg" alt="XTAL — Crystal">
+  <figcaption><b>XTAL — Crystal</b> — Crystal — 2 pins, category Clock.</figcaption>
+</figure>
+<figure class="shot" data-i="305">
+  <img loading="lazy" src="shots/chip-xtal-detail.jpg" alt="XTAL — pin detail">
+  <figcaption><b>XTAL — pin detail</b> — Crystal: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="306">
+  <img loading="lazy" src="shots/chip-osc-pinout.jpg" alt="OSC — Clock module">
+  <figcaption><b>OSC — Clock module</b> — Clock module — 1 pins, category Clock.</figcaption>
+</figure>
+<figure class="shot" data-i="307">
+  <img loading="lazy" src="shots/chip-osc-detail.jpg" alt="OSC — pin detail">
+  <figcaption><b>OSC — pin detail</b> — Clock module: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure></div>
+    </section><section id="i-o" class="sub" data-name="i/o">
+      <h2>I/O</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="308">
+  <img loading="lazy" src="shots/chip-led-pinout.jpg" alt="LED — LED">
+  <figcaption><b>LED — LED</b> — LED — 2 pins, category I/O.</figcaption>
+</figure>
+<figure class="shot" data-i="309">
+  <img loading="lazy" src="shots/chip-led-detail.jpg" alt="LED — pin detail">
+  <figcaption><b>LED — pin detail</b> — LED: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="310">
+  <img loading="lazy" src="shots/chip-led8-pinout.jpg" alt="LED8 — LED bar x8">
+  <figcaption><b>LED8 — LED bar x8</b> — LED bar x8 — 9 pins, category I/O.</figcaption>
+</figure>
+<figure class="shot" data-i="311">
+  <img loading="lazy" src="shots/chip-led8-detail.jpg" alt="LED8 — pin detail">
+  <figcaption><b>LED8 — pin detail</b> — LED bar x8: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="312">
+  <img loading="lazy" src="shots/chip-seg7-pinout.jpg" alt="SEG7 — 7-segment (CC)">
+  <figcaption><b>SEG7 — 7-segment (CC)</b> — 7-segment (CC) — 9 pins, category I/O.</figcaption>
+</figure>
+<figure class="shot" data-i="313">
+  <img loading="lazy" src="shots/chip-seg7-detail.jpg" alt="SEG7 — pin detail">
+  <figcaption><b>SEG7 — pin detail</b> — 7-segment (CC): pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="314">
+  <img loading="lazy" src="shots/chip-sw8-pinout.jpg" alt="SW8 — DIP switch x8">
+  <figcaption><b>SW8 — DIP switch x8</b> — DIP switch x8 — 8 pins, category I/O.</figcaption>
+</figure>
+<figure class="shot" data-i="315">
+  <img loading="lazy" src="shots/chip-sw8-detail.jpg" alt="SW8 — pin detail">
+  <figcaption><b>SW8 — pin detail</b> — DIP switch x8: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="316">
+  <img loading="lazy" src="shots/chip-btn-pinout.jpg" alt="BTN — Push button">
+  <figcaption><b>BTN — Push button</b> — Push button — 1 pins, category I/O.</figcaption>
+</figure>
+<figure class="shot" data-i="317">
+  <img loading="lazy" src="shots/chip-btn-detail.jpg" alt="BTN — pin detail">
+  <figcaption><b>BTN — pin detail</b> — Push button: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="318">
+  <img loading="lazy" src="shots/chip-xtkbd-pinout.jpg" alt="XTKBD — XT keyboard">
+  <figcaption><b>XTKBD — XT keyboard</b> — XT keyboard — 3 pins, category I/O. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="319">
+  <img loading="lazy" src="shots/chip-xtkbd-detail.jpg" alt="XTKBD — pin detail">
+  <figcaption><b>XTKBD — pin detail</b> — XT keyboard: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="320">
+  <img loading="lazy" src="shots/chip-kbdshift-pinout.jpg" alt="KBDSHIFT — Keyboard shift register ('322+FF)">
+  <figcaption><b>KBDSHIFT — Keyboard shift register ('322+FF)</b> — Keyboard shift register ('322+FF) — 12 pins, category I/O. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="321">
+  <img loading="lazy" src="shots/chip-kbdshift-detail.jpg" alt="KBDSHIFT — pin detail">
+  <figcaption><b>KBDSHIFT — pin detail</b> — Keyboard shift register ('322+FF): pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="322">
+  <img loading="lazy" src="shots/chip-com8250-pinout.jpg" alt="COM8250 — 8250 UART (COM1 card)">
+  <figcaption><b>COM8250 — 8250 UART (COM1 card)</b> — 8250 UART (COM1 card) — 24 pins, category I/O. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="323">
+  <img loading="lazy" src="shots/chip-com8250-detail.jpg" alt="COM8250 — pin detail">
+  <figcaption><b>COM8250 — pin detail</b> — 8250 UART (COM1 card): pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="324">
+  <img loading="lazy" src="shots/chip-lpt378-pinout.jpg" alt="LPT378 — LPT1 printer adapter">
+  <figcaption><b>LPT378 — LPT1 printer adapter</b> — LPT1 printer adapter — 39 pins, category I/O. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="325">
+  <img loading="lazy" src="shots/chip-lpt378-detail.jpg" alt="LPT378 — pin detail">
+  <figcaption><b>LPT378 — pin detail</b> — LPT1 printer adapter: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="326">
+  <img loading="lazy" src="shots/chip-printer-pinout.jpg" alt="PRINTER — Dot-matrix printer">
+  <figcaption><b>PRINTER — Dot-matrix printer</b> — Dot-matrix printer — 14 pins, category I/O. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="327">
+  <img loading="lazy" src="shots/chip-printer-detail.jpg" alt="PRINTER — pin detail">
+  <figcaption><b>PRINTER — pin detail</b> — Dot-matrix printer: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="328">
+  <img loading="lazy" src="shots/chip-spkr-pinout.jpg" alt="SPKR — Speaker">
+  <figcaption><b>SPKR — Speaker</b> — Speaker — 2 pins, category I/O. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="329">
+  <img loading="lazy" src="shots/chip-spkr-detail.jpg" alt="SPKR — pin detail">
+  <figcaption><b>SPKR — pin detail</b> — Speaker: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure></div>
+    </section><section id="logic" class="sub" data-name="logic">
+      <h2>Logic</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="330">
+  <img loading="lazy" src="shots/chip-74ls00-pinout.jpg" alt="74LS00 — Quad 2-in NAND">
+  <figcaption><b>74LS00 — Quad 2-in NAND</b> — Quad 2-in NAND — 14 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="331">
+  <img loading="lazy" src="shots/chip-74ls00-detail.jpg" alt="74LS00 — pin detail">
+  <figcaption><b>74LS00 — pin detail</b> — Quad 2-in NAND: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="332">
+  <img loading="lazy" src="shots/chip-74ls02-pinout.jpg" alt="74LS02 — Quad 2-in NOR">
+  <figcaption><b>74LS02 — Quad 2-in NOR</b> — Quad 2-in NOR — 14 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="333">
+  <img loading="lazy" src="shots/chip-74ls02-detail.jpg" alt="74LS02 — pin detail">
+  <figcaption><b>74LS02 — pin detail</b> — Quad 2-in NOR: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="334">
+  <img loading="lazy" src="shots/chip-74ls08-pinout.jpg" alt="74LS08 — Quad 2-in AND">
+  <figcaption><b>74LS08 — Quad 2-in AND</b> — Quad 2-in AND — 14 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="335">
+  <img loading="lazy" src="shots/chip-74ls08-detail.jpg" alt="74LS08 — pin detail">
+  <figcaption><b>74LS08 — pin detail</b> — Quad 2-in AND: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="336">
+  <img loading="lazy" src="shots/chip-74ls32-pinout.jpg" alt="74LS32 — Quad 2-in OR">
+  <figcaption><b>74LS32 — Quad 2-in OR</b> — Quad 2-in OR — 14 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="337">
+  <img loading="lazy" src="shots/chip-74ls32-detail.jpg" alt="74LS32 — pin detail">
+  <figcaption><b>74LS32 — pin detail</b> — Quad 2-in OR: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="338">
+  <img loading="lazy" src="shots/chip-74ls86-pinout.jpg" alt="74LS86 — Quad 2-in XOR">
+  <figcaption><b>74LS86 — Quad 2-in XOR</b> — Quad 2-in XOR — 14 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="339">
+  <img loading="lazy" src="shots/chip-74ls86-detail.jpg" alt="74LS86 — pin detail">
+  <figcaption><b>74LS86 — pin detail</b> — Quad 2-in XOR: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="340">
+  <img loading="lazy" src="shots/chip-74ls04-pinout.jpg" alt="74LS04 — Hex inverter">
+  <figcaption><b>74LS04 — Hex inverter</b> — Hex inverter — 14 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="341">
+  <img loading="lazy" src="shots/chip-74ls04-detail.jpg" alt="74LS04 — pin detail">
+  <figcaption><b>74LS04 — pin detail</b> — Hex inverter: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="342">
+  <img loading="lazy" src="shots/chip-74ls138-pinout.jpg" alt="74LS138 — 3-to-8 decoder">
+  <figcaption><b>74LS138 — 3-to-8 decoder</b> — 3-to-8 decoder — 16 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="343">
+  <img loading="lazy" src="shots/chip-74ls138-detail.jpg" alt="74LS138 — pin detail">
+  <figcaption><b>74LS138 — pin detail</b> — 3-to-8 decoder: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="344">
+  <img loading="lazy" src="shots/chip-74ls139-pinout.jpg" alt="74LS139 — Dual 2-to-4 decoder">
+  <figcaption><b>74LS139 — Dual 2-to-4 decoder</b> — Dual 2-to-4 decoder — 16 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="345">
+  <img loading="lazy" src="shots/chip-74ls139-detail.jpg" alt="74LS139 — pin detail">
+  <figcaption><b>74LS139 — pin detail</b> — Dual 2-to-4 decoder: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="346">
+  <img loading="lazy" src="shots/chip-74ls373-pinout.jpg" alt="74LS373 — Octal transparent latch">
+  <figcaption><b>74LS373 — Octal transparent latch</b> — Octal transparent latch — 20 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="347">
+  <img loading="lazy" src="shots/chip-74ls373-detail.jpg" alt="74LS373 — pin detail">
+  <figcaption><b>74LS373 — pin detail</b> — Octal transparent latch: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="348">
+  <img loading="lazy" src="shots/chip-74ls374-pinout.jpg" alt="74LS374 — Octal D flip-flop">
+  <figcaption><b>74LS374 — Octal D flip-flop</b> — Octal D flip-flop — 20 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="349">
+  <img loading="lazy" src="shots/chip-74ls374-detail.jpg" alt="74LS374 — pin detail">
+  <figcaption><b>74LS374 — pin detail</b> — Octal D flip-flop: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="350">
+  <img loading="lazy" src="shots/chip-74ls245-pinout.jpg" alt="74LS245 — Octal bus transceiver">
+  <figcaption><b>74LS245 — Octal bus transceiver</b> — Octal bus transceiver — 20 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="351">
+  <img loading="lazy" src="shots/chip-74ls245-detail.jpg" alt="74LS245 — pin detail">
+  <figcaption><b>74LS245 — pin detail</b> — Octal bus transceiver: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="352">
+  <img loading="lazy" src="shots/chip-74ls244-pinout.jpg" alt="74LS244 — Octal buffer">
+  <figcaption><b>74LS244 — Octal buffer</b> — Octal buffer — 20 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="353">
+  <img loading="lazy" src="shots/chip-74ls244-detail.jpg" alt="74LS244 — pin detail">
+  <figcaption><b>74LS244 — pin detail</b> — Octal buffer: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="354">
+  <img loading="lazy" src="shots/chip-74ls157-pinout.jpg" alt="74LS157 — Quad 2:1 mux">
+  <figcaption><b>74LS157 — Quad 2:1 mux</b> — Quad 2:1 mux — 16 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="355">
+  <img loading="lazy" src="shots/chip-74ls157-detail.jpg" alt="74LS157 — pin detail">
+  <figcaption><b>74LS157 — pin detail</b> — Quad 2:1 mux: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="356">
+  <img loading="lazy" src="shots/chip-74ls74-pinout.jpg" alt="74LS74 — Dual D flip-flop">
+  <figcaption><b>74LS74 — Dual D flip-flop</b> — Dual D flip-flop — 14 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="357">
+  <img loading="lazy" src="shots/chip-74ls74-detail.jpg" alt="74LS74 — pin detail">
+  <figcaption><b>74LS74 — pin detail</b> — Dual D flip-flop: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="358">
+  <img loading="lazy" src="shots/chip-74ls393-pinout.jpg" alt="74LS393 — Dual 4-bit ripple counter">
+  <figcaption><b>74LS393 — Dual 4-bit ripple counter</b> — Dual 4-bit ripple counter — 14 pins, category Logic.</figcaption>
+</figure>
+<figure class="shot" data-i="359">
+  <img loading="lazy" src="shots/chip-74ls393-detail.jpg" alt="74LS393 — pin detail">
+  <figcaption><b>74LS393 — pin detail</b> — Dual 4-bit ripple counter: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure></div>
+    </section><section id="memory" class="sub" data-name="memory">
+      <h2>Memory</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="360">
+  <img loading="lazy" src="shots/chip-sram6264-pinout.jpg" alt="SRAM6264 — 6264 SRAM 8Kx8">
+  <figcaption><b>SRAM6264 — 6264 SRAM 8Kx8</b> — 6264 SRAM 8Kx8 — 28 pins, category Memory. Has a memory image the analyzer can probe.</figcaption>
+</figure>
+<figure class="shot" data-i="361">
+  <img loading="lazy" src="shots/chip-sram6264-detail.jpg" alt="SRAM6264 — pin detail">
+  <figcaption><b>SRAM6264 — pin detail</b> — 6264 SRAM 8Kx8: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="362">
+  <img loading="lazy" src="shots/chip-sram62256-pinout.jpg" alt="SRAM62256 — 62256 SRAM 32Kx8">
+  <figcaption><b>SRAM62256 — 62256 SRAM 32Kx8</b> — 62256 SRAM 32Kx8 — 28 pins, category Memory. Has a memory image the analyzer can probe.</figcaption>
+</figure>
+<figure class="shot" data-i="363">
+  <img loading="lazy" src="shots/chip-sram62256-detail.jpg" alt="SRAM62256 — pin detail">
+  <figcaption><b>SRAM62256 — pin detail</b> — 62256 SRAM 32Kx8: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="364">
+  <img loading="lazy" src="shots/chip-sram628512-pinout.jpg" alt="SRAM628512 — 628512 SRAM 512Kx8">
+  <figcaption><b>SRAM628512 — 628512 SRAM 512Kx8</b> — 628512 SRAM 512Kx8 — 32 pins, category Memory. Has a memory image the analyzer can probe.</figcaption>
+</figure>
+<figure class="shot" data-i="365">
+  <img loading="lazy" src="shots/chip-sram628512-detail.jpg" alt="SRAM628512 — pin detail">
+  <figcaption><b>SRAM628512 — pin detail</b> — 628512 SRAM 512Kx8: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="366">
+  <img loading="lazy" src="shots/chip-eprom2764-pinout.jpg" alt="EPROM2764 — 2764 EPROM 8Kx8">
+  <figcaption><b>EPROM2764 — 2764 EPROM 8Kx8</b> — 2764 EPROM 8Kx8 — 28 pins, category Memory. Has a memory image the analyzer can probe.</figcaption>
+</figure>
+<figure class="shot" data-i="367">
+  <img loading="lazy" src="shots/chip-eprom2764-detail.jpg" alt="EPROM2764 — pin detail">
+  <figcaption><b>EPROM2764 — pin detail</b> — 2764 EPROM 8Kx8: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="368">
+  <img loading="lazy" src="shots/chip-eprom27128-pinout.jpg" alt="EPROM27128 — 27128 EPROM 16Kx8">
+  <figcaption><b>EPROM27128 — 27128 EPROM 16Kx8</b> — 27128 EPROM 16Kx8 — 28 pins, category Memory. Has a memory image the analyzer can probe.</figcaption>
+</figure>
+<figure class="shot" data-i="369">
+  <img loading="lazy" src="shots/chip-eprom27128-detail.jpg" alt="EPROM27128 — pin detail">
+  <figcaption><b>EPROM27128 — pin detail</b> — 27128 EPROM 16Kx8: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="370">
+  <img loading="lazy" src="shots/chip-eprom27256-pinout.jpg" alt="EPROM27256 — 27256 EPROM 32Kx8">
+  <figcaption><b>EPROM27256 — 27256 EPROM 32Kx8</b> — 27256 EPROM 32Kx8 — 28 pins, category Memory. Has a memory image the analyzer can probe.</figcaption>
+</figure>
+<figure class="shot" data-i="371">
+  <img loading="lazy" src="shots/chip-eprom27256-detail.jpg" alt="EPROM27256 — pin detail">
+  <figcaption><b>EPROM27256 — pin detail</b> — 27256 EPROM 32Kx8: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure></div>
+    </section><section id="video" class="sub" data-name="video">
+      <h2>Video</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="372">
+  <img loading="lazy" src="shots/chip-hgc-pinout.jpg" alt="HGC — Hercules video card">
+  <figcaption><b>HGC — Hercules video card</b> — Hercules video card — 35 pins, category Video. Has a memory image the analyzer can probe. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="373">
+  <img loading="lazy" src="shots/chip-hgc-detail.jpg" alt="HGC — pin detail">
+  <figcaption><b>HGC — pin detail</b> — Hercules video card: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="374">
+  <img loading="lazy" src="shots/chip-crt-pinout.jpg" alt="CRT — Monochrome CRT monitor">
+  <figcaption><b>CRT — Monochrome CRT monitor</b> — Monochrome CRT monitor — 3 pins, category Video.</figcaption>
+</figure>
+<figure class="shot" data-i="375">
+  <img loading="lazy" src="shots/chip-crt-detail.jpg" alt="CRT — pin detail">
+  <figcaption><b>CRT — pin detail</b> — Monochrome CRT monitor: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure></div>
+    </section><section id="storage" class="sub" data-name="storage">
+      <h2>Storage</h2>
+      
+      <div class="grid gal">
+<figure class="shot" data-i="376">
+  <img loading="lazy" src="shots/chip-upd765-pinout.jpg" alt="UPD765 — µPD765 floppy controller">
+  <figcaption><b>UPD765 — µPD765 floppy controller</b> — µPD765 floppy controller — 23 pins, category Storage. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="377">
+  <img loading="lazy" src="shots/chip-upd765-detail.jpg" alt="UPD765 — pin detail">
+  <figcaption><b>UPD765 — pin detail</b> — µPD765 floppy controller: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure>
+<figure class="shot" data-i="378">
+  <img loading="lazy" src="shots/chip-xtide-pinout.jpg" alt="XTIDE — XT-IDE card + fixed disk">
+  <figcaption><b>XTIDE — XT-IDE card + fixed disk</b> — XT-IDE card + fixed disk — 21 pins, category Storage. Double-click it while running for its programmer's view.</figcaption>
+</figure>
+<figure class="shot" data-i="379">
+  <img loading="lazy" src="shots/chip-xtide-detail.jpg" alt="XTIDE — pin detail">
+  <figcaption><b>XTIDE — pin detail</b> — XT-IDE card + fixed disk: pin names as drawn, with overbars on active-low signals.</figcaption>
+</figure></div>
+    </section><section id="programmer-s-views" class="sub" data-name="programmer's views">
+      <h2>Programmer's views</h2>
+      <p>These dialogs are the chip's software interface made visible. Every field is
+        the real state the simulation is using — set a bit here while paused and the machine behaves
+        differently when you resume.</p>
+      <div class="grid gal">
+<figure class="shot" data-i="380">
+  <img loading="lazy" src="shots/progview-pc-xt-8259a.jpg" alt="Interrupt controller — 8259A">
+  <figcaption><b>Interrupt controller — 8259A</b> — IMR, IRR and ISR as bit grids with an INT lamp: watch a request arrive, get masked, or go into service.</figcaption>
+</figure>
+<figure class="shot" data-i="381">
+  <img loading="lazy" src="shots/progview-pc-xt-8253.jpg" alt="Programmable interval timer — 8253">
+  <figcaption><b>Programmable interval timer — 8253</b> — All three counters with mode, reload and live count — plus OUT and GATE lamps.</figcaption>
+</figure>
+<figure class="shot" data-i="382">
+  <img loading="lazy" src="shots/progview-pc-xt-8255.jpg" alt="Parallel peripheral interface — 8255">
+  <figcaption><b>Parallel peripheral interface — 8255</b> — The control word decoded into port directions, and all three port latches.</figcaption>
+</figure>
+<figure class="shot" data-i="383">
+  <img loading="lazy" src="shots/progview-pc-xt-8237a.jpg" alt="DMA controller — 8237A">
+  <figcaption><b>DMA controller — 8237A</b> — Channel addresses and counts, the mask register, and port 80h — where POST codes appear.</figcaption>
+</figure>
+<figure class="shot" data-i="384">
+  <img loading="lazy" src="shots/progview-pc-xt-upd765.jpg" alt="Floppy disk controller — UPD765">
+  <figcaption><b>Floppy disk controller — UPD765</b> — Motor and IRQ lamps, the diskette in the bay, and a running count of sectors read and written.</figcaption>
+</figure>
+<figure class="shot" data-i="385">
+  <img loading="lazy" src="shots/progview-pc-xt-hgc.jpg" alt="Hercules video card — HGC">
+  <figcaption><b>Hercules video card — HGC</b> — Mode and configuration registers, the CRTC index, the current scanline and the frame counter.</figcaption>
+</figure>
+<figure class="shot" data-i="386">
+  <img loading="lazy" src="shots/progview-pc-xt-xtide.jpg" alt="XT-IDE fixed disk — XTIDE">
+  <figcaption><b>XT-IDE fixed disk — XTIDE</b> — Drive status, geometry, and the C/H/S registers as the BIOS sets them.</figcaption>
+</figure>
+<figure class="shot" data-i="387">
+  <img loading="lazy" src="shots/progview-pc-xt-com8250.jpg" alt="Serial UART — COM8250">
+  <figcaption><b>Serial UART — COM8250</b> — Baud divisor, IER, LCR and the receive queue — with a button that opens a live terminal.</figcaption>
+</figure>
+<figure class="shot" data-i="388">
+  <img loading="lazy" src="shots/progview-pc-xt-74ls373.jpg" alt="Octal latch — 74LS373">
+  <figcaption><b>Octal latch — 74LS373</b> — Even the glue has a view: the latched byte, plus LE and ~OE lamps.</figcaption>
+</figure>
+<figure class="shot" data-i="389">
+  <img loading="lazy" src="shots/progview-pc-xt-spkr.jpg" alt="Speaker — SPKR">
+  <figcaption><b>Speaker — SPKR</b> — The measured frequency of whatever is driving the cone, a log of recent tones, and a button to actually listen.</figcaption>
+</figure>
+<figure class="shot" data-i="390">
+  <img loading="lazy" src="shots/progview-pc-xt-xtkbd.jpg" alt="XT keyboard — XTKBD">
+  <figcaption><b>XT keyboard — XTKBD</b> — The scancode queue, the bit being shifted out, and a running total of codes sent.</figcaption>
+</figure>
+<figure class="shot" data-i="391">
+  <img loading="lazy" src="shots/progview-pc-speaker-spkr.jpg" alt="Speaker (music board) — SPKR">
+  <figcaption><b>Speaker (music board) — SPKR</b> — On the music board the frequency readout follows the notes the program plays.</figcaption>
+</figure>
+<figure class="shot" data-i="392">
+  <img loading="lazy" src="shots/progview-lpt-printer-printer.jpg" alt="Dot-matrix printer — PRINTER">
+  <figcaption><b>Dot-matrix printer — PRINTER</b> — The paper: everything the program has printed, with a tear-off button.</figcaption>
+</figure>
+<figure class="shot" data-i="393">
+  <img loading="lazy" src="shots/progview-dip-echo-sw8.jpg" alt="DIP switches — SW8">
+  <figcaption><b>DIP switches — SW8</b> — The one view that stays editable while running — flip a switch and the program sees it immediately.</figcaption>
+</figure>
+<figure class="shot" data-i="394">
+  <img loading="lazy" src="shots/progview-dual-8088-8289.jpg" alt="Bus arbiter — 8289">
+  <figcaption><b>Bus arbiter — 8289</b> — Whether this processor holds the bus, and how many grants it has won.</figcaption>
+</figure></div>
+    </section><section id="per-chip-dialogs" class="sub" data-name="per-chip dialogs">
+      <h2>Per-chip dialogs</h2>
+      <p>Double-click a chip while <em>editing</em> instead and you get its properties,
+        including the tabular wiring view: every pin with a dropdown of plausible targets, ranked by how
+        likely each is for that specific pin. You can wire an entire chip without touching the canvas.</p>
+      <div class="grid gal">
+<figure class="shot" data-i="395">
+  <img loading="lazy" src="shots/props-8088.jpg" alt="Chip properties">
+  <figcaption><b>Chip properties</b> — Double-click a chip while editing to reach its configuration and its tabular wiring.</figcaption>
+</figure>
+<figure class="shot" data-i="396">
+  <img loading="lazy" src="shots/props-xtal.jpg" alt="Crystal frequency">
+  <figcaption><b>Crystal frequency</b> — Properties are per-part: a crystal carries its frequency, a DIP switch its bit pattern, an LED its colour.</figcaption>
+</figure>
+<figure class="shot" data-i="397">
+  <img loading="lazy" src="shots/props-conn.jpg" alt="Tabular wiring">
+  <figcaption><b>Tabular wiring</b> — Every pin with a dropdown of targets, ranked by how likely each is for that specific pin — sibling evidence, signal families and proximity all count. You can wire a whole chip without touching the canvas.</figcaption>
+</figure>
+<figure class="shot" data-i="398">
+  <img loading="lazy" src="shots/chip-panel-conn.jpg" alt="The Chip panel">
+  <figcaption><b>The Chip panel</b> — The same connection table lives in the Chip panel, alongside the part's properties and — while running — its internal state and live pin values.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

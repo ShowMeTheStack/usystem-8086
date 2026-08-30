@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" data-page="disks">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disk images — µSystem 8086</title>
+<meta name="description" content="FreeDOS media that ships in the file, images you build yourself, and a FAT12 toolchain that runs in the browser.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html" class="here">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>Disk images</h1>
+    <p class="lede">FreeDOS media that ships in the file, images you build yourself, and a FAT12 toolchain that runs in the browser.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#the-library">The library</a><a href="#the-drive">The drive</a><a href="#fat-tools">FAT tools</a>
+      <div class="tocmeta">4 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>The tool carries a complete FreeDOS 1.3 install floppy, and can <em>synthesize</em> a bootable
+      FreeDOS hard disk on demand: it formats a 10.4 MB image with a hand-assembled MBR bootstrap,
+      transplants FreeDOS's own boot record, installs the kernel and command interpreter, copies a small DOS
+      toolkit into <code>C:\DOS</code>, and writes a <code>CONFIG.SYS</code> and <code>AUTOEXEC.BAT</code>.
+      The result boots to a <code>C:\&gt;</code> prompt with no floppy in the drive.</p>
+      <p>Your own images live in the browser between sessions. You can format blank media, import
+      <code>.img</code> files, duplicate the built-ins to get an editable copy, export anything to your
+      machine, and populate an image from a folder on your computer — files are copied into the image's FAT
+      filesystem with 8.3 name mangling and subfolders preserved.</p></div><section id="the-library" class="sub" data-name="the library">
+      <h2>The library</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="470">
+  <img loading="lazy" src="shots/disklib.jpg" alt="The disk image library">
+  <figcaption><b>The disk image library</b> — Built-in FreeDOS media plus your own images, kept in the browser between sessions: insert, attach, duplicate, export, import, or populate from a folder on your machine.</figcaption>
+</figure>
+<figure class="shot" data-i="471">
+  <img loading="lazy" src="shots/disklib-actions.jpg" alt="Creating media">
+  <figcaption><b>Creating media</b> — Format blank 360K, 720K or 1.44M floppies, or a 10.4 MB hard disk — all FAT12, all written by the tool's own filesystem code.</figcaption>
+</figure></div>
+    </section><section id="the-drive" class="sub" data-name="the drive">
+      <h2>The drive</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="472">
+  <img loading="lazy" src="shots/fdc-view.jpg" alt="The floppy drive">
+  <figcaption><b>The floppy drive</b> — Motor and IRQ lamps, the diskette in the bay with its geometry, a running count of sectors read and written, and buttons to insert, eject, format or write the image back to your machine.</figcaption>
+</figure></div>
+    </section><section id="fat-tools" class="sub" data-name="fat tools">
+      <h2>FAT tools</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="473">
+  <img loading="lazy" src="shots/disk-tools.jpg" alt="Browsing a real FAT12 disk">
+  <figcaption><b>Browsing a real FAT12 disk</b> — The FreeDOS diskette, read by the tool's own FAT12 implementation: browse directories, download files out, copy files in, or format fresh media.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

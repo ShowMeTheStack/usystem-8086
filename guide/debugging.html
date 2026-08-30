@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" data-page="debugging">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Debugging — µSystem 8086</title>
+<meta name="description" content="Source-level breakpoints, assembly-flavoured stepping, watches, memory and IO watchpoints, a cycle-costed trace, and stepping backwards in time.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html" class="here">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>Debugging</h1>
+    <p class="lede">Source-level breakpoints, assembly-flavoured stepping, watches, memory and IO watchpoints, a cycle-costed trace, and stepping backwards in time.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#the-editor">The editor</a><a href="#breakpoints">Breakpoints</a><a href="#the-debug-tab">The Debug tab</a><a href="#stepping">Stepping</a><a href="#call-stack">Call stack</a><a href="#disassembly">Disassembly</a><a href="#trace">Trace</a><a href="#watchpoints">Watchpoints</a>
+      <div class="tocmeta">18 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>The debugger works at two altitudes at once. You set a breakpoint on a line of your assembly, and
+      when it hits you are paused in the same timeline the waveform analyzer is recording — so you can read
+      your source line, inspect registers, <em>and</em> scrub the waveforms backwards to watch the bus cycles
+      that led there. No hardware trainer can do that.</p>
+      <p>Breakpoints are exact, not approximate. A source line is resolved through the <em>proved</em> memory
+      map to every physical address where that instruction's byte answers — which matters enormously on kit
+      boards, where partial address decoding mirrors your ROM across dozens of windows.</p></div><section id="the-editor" class="sub" data-name="the editor">
+      <h2>The editor</h2>
+      <p>Write 8086 assembly with labels, <code>EQU</code> constants, expressions,
+        <code>DB</code>/<code>DW</code>/<code>TIMES</code>, and segment overrides. Errors are reported by line
+        number. Assembling programs the board's ROM.</p>
+      <div class="grid">
+<figure class="shot" data-i="431">
+  <img loading="lazy" src="shots/editor.jpg" alt="The assembler pane">
+  <figcaption><b>The assembler pane</b> — Labels, EQU constants, expressions, DB/DW/TIMES, segment overrides and the full 8086 instruction set. Errors are reported by line; assembling programs the board's ROM.</figcaption>
+</figure></div>
+    </section><section id="breakpoints" class="sub" data-name="breakpoints">
+      <h2>Breakpoints</h2>
+      <p>Click the gutter for a breakpoint, shift-click for a conditional one. Conditions are
+        full expressions — <code>AX==5</code>, <code>CX&gt;2 &amp;&amp; ZF</code>, <code>w[counter]!=0</code> —
+        and each breakpoint can also carry a hit count, so you can stop on the 500th pass through a loop.</p>
+      <div class="grid">
+<figure class="shot" data-i="432">
+  <img loading="lazy" src="shots/gutter-bp.jpg" alt="Click the gutter">
+  <figcaption><b>Click the gutter</b> — A red dot marks a line breakpoint. It is resolved through the proved memory map to every physical address where that instruction answers — which matters enormously on boards with partial decoding.</figcaption>
+</figure>
+<figure class="shot" data-i="433">
+  <img loading="lazy" src="shots/gutter-cond.jpg" alt="Conditional breakpoints">
+  <figcaption><b>Conditional breakpoints</b> — Shift-click sets a condition. An amber dot means the line only stops when its expression is true — here, only when BX reaches 3.</figcaption>
+</figure>
+<figure class="shot" data-i="434">
+  <img loading="lazy" src="shots/bp-hit-hint.jpg" alt="Stopped at a breakpoint">
+  <figcaption><b>Stopped at a breakpoint</b> — The hint bar names what stopped you and reminds you of the stepping keys.</figcaption>
+</figure>
+<figure class="shot" data-i="435">
+  <img loading="lazy" src="shots/current-line.jpg" alt="The current line">
+  <figcaption><b>The current line</b> — A highlight bar and a ▶ arrow mark the instruction about to execute; the editor scrolls to keep it in view as you step.</figcaption>
+</figure></div>
+    </section><section id="the-debug-tab" class="sub" data-name="the debug tab">
+      <h2>The Debug tab</h2>
+      <p>One pane holds the whole session: stepping controls, watches, breakpoints,
+        watchpoints, call stack, live disassembly and the instruction trace.</p>
+      <div class="grid">
+<figure class="shot" data-i="436">
+  <img loading="lazy" src="shots/debug-panel.jpg" alt="The Debug tab">
+  <figcaption><b>The Debug tab</b> — Stepping controls, watches, breakpoints, watchpoints, call stack, live disassembly and the instruction trace — one pane for the whole session.</figcaption>
+</figure></div>
+    </section><section id="stepping" class="sub" data-name="stepping">
+      <h2>Stepping</h2>
+      <p>The labels speak assembly, not C. <strong>⤵ trace</strong> is DEBUG.COM's Trace — one
+        instruction, descending into calls. <strong>⤼ over call</strong> is Proceed — a whole
+        <code>CALL</code>, <code>INT</code> or <code>REP</code> executed as one step. <strong>⤴ to ret</strong>
+        finishes the current subroutine. <strong>▸│ to caret</strong> runs to the cursor line.
+        <strong>↩ un-step</strong> un-executes the last instruction.</p>
+      <div class="grid">
+<figure class="shot" data-i="437">
+  <img loading="lazy" src="shots/step-buttons.jpg" alt="Assembly-flavoured stepping">
+  <figcaption><b>Assembly-flavoured stepping</b> — ⤵ trace is DEBUG.COM's Trace — one instruction, into calls. ⤼ over call is Proceed — a whole CALL, INT or REP as one step. ⤴ to ret finishes the subroutine. ▸│ to caret runs to the cursor. ↩ un-step travels backwards in time.</figcaption>
+</figure>
+<figure class="shot" data-i="438">
+  <img loading="lazy" src="shots/stepping-0.jpg" alt="After 1 instruction">
+  <figcaption><b>After 1 instruction</b> — Each step updates the watches, the call stack, the disassembly and the trace together — and the watch values flash when they change.</figcaption>
+</figure>
+<figure class="shot" data-i="439">
+  <img loading="lazy" src="shots/stepping-1.jpg" alt="After 2 instructions">
+  <figcaption><b>After 2 instructions</b> — Each step updates the watches, the call stack, the disassembly and the trace together — and the watch values flash when they change.</figcaption>
+</figure>
+<figure class="shot" data-i="440">
+  <img loading="lazy" src="shots/stepping-2.jpg" alt="After 3 instructions">
+  <figcaption><b>After 3 instructions</b> — Each step updates the watches, the call stack, the disassembly and the trace together — and the watch values flash when they change.</figcaption>
+</figure>
+<figure class="shot" data-i="441">
+  <img loading="lazy" src="shots/stepping-3.jpg" alt="After 4 instructions">
+  <figcaption><b>After 4 instructions</b> — Each step updates the watches, the call stack, the disassembly and the trace together — and the watch values flash when they change.</figcaption>
+</figure>
+<figure class="shot" data-i="442">
+  <img loading="lazy" src="shots/stepping-4.jpg" alt="After 5 instructions">
+  <figcaption><b>After 5 instructions</b> — Each step updates the watches, the call stack, the disassembly and the trace together — and the watch values flash when they change.</figcaption>
+</figure>
+<figure class="shot" data-i="443">
+  <img loading="lazy" src="shots/un-step.jpg" alt="Un-stepping">
+  <figcaption><b>Un-stepping</b> — ↩ un-step un-executes the last instruction by riding the rewind history — the register you just watched change goes back to what it was.</figcaption>
+</figure></div>
+    </section><section id="call-stack" class="sub" data-name="call stack">
+      <h2>Call stack</h2>
+      <p><code>CALL</code>/<code>RET</code> and every interrupt — software <code>INT</code>,
+        hardware IRQ, NMI and single-step traps — are tracked as frames, with the vector shown for interrupt
+        frames.</p>
+      <div class="grid">
+<figure class="shot" data-i="444">
+  <img loading="lazy" src="shots/callstack.jpg" alt="The call stack">
+  <figcaption><b>The call stack</b> — CALL/RET and every interrupt — software INT, hardware IRQ, NMI and single-step traps — are tracked as frames, with the vector shown for interrupt frames.</figcaption>
+</figure></div>
+    </section><section id="disassembly" class="sub" data-name="disassembly">
+      <h2>Disassembly</h2>
+      <p>Paused outside your own source — in the BIOS, or an interrupt handler you did not
+        write — the debugger disassembles live from mapped memory. Click any line to set a breakpoint at that
+        address.</p>
+      <div class="grid">
+<figure class="shot" data-i="445">
+  <img loading="lazy" src="shots/disasm.jpg" alt="Live disassembly">
+  <figcaption><b>Live disassembly</b> — Paused outside your own source — in the BIOS, or a handler you did not write — the debugger disassembles straight out of mapped memory. Click any line to set a breakpoint there.</figcaption>
+</figure></div>
+    </section><section id="trace" class="sub" data-name="trace">
+      <h2>Trace</h2>
+      <p>Every retired instruction is recorded with its <strong>exact cycle cost</strong>, so you can
+        see for yourself that a <code>MUL</code> costs what the datasheet claims. Interrupt vectors are
+        annotated, the register that changed is tagged, clicking a row jumps to its source line, and the whole
+        trace exports as text.</p>
+      <div class="grid">
+<figure class="shot" data-i="446">
+  <img loading="lazy" src="shots/trace.jpg" alt="The instruction trace">
+  <figcaption><b>The instruction trace</b> — Every retired instruction with its exact cycle cost, interrupt vectors annotated, and the register that changed. Click a row to jump to its source line; export the whole thing as text.</figcaption>
+</figure></div>
+    </section><section id="watchpoints" class="sub" data-name="watchpoints">
+      <h2>Watchpoints</h2>
+      <p>This is the feature no real 8086 kit could offer: <strong>break when an address is
+        touched.</strong> Set a memory watchpoint on a range and the machine stops on the instruction that
+        wrote it, reporting the value. "Who is corrupting my stack?" answers itself. IO watchpoints do the
+        same for port accesses. The hook sits inside the CPU's bus generators, so nothing escapes at any
+        speed — including turbo.</p>
+      <div class="grid">
+<figure class="shot" data-i="447">
+  <img loading="lazy" src="shots/watchpoints.jpg" alt="Memory and IO watchpoints">
+  <figcaption><b>Memory and IO watchpoints</b> — Break when an address or range is written or read, or when an IO port is touched. &quot;Who is corrupting my stack?&quot; answers itself — and the hook sits inside the CPU's bus generators, so nothing escapes even in turbo.</figcaption>
+</figure>
+<figure class="shot" data-i="448">
+  <img loading="lazy" src="shots/watchpoint-hit.jpg" alt="A watchpoint fires">
+  <figcaption><b>A watchpoint fires</b> — The machine stops on the instruction that touched the address, and reports what was written.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

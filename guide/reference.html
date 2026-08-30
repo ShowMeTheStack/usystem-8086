@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" data-page="reference">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — µSystem 8086</title>
+<meta name="description" content="Every keyboard shortcut, mouse gesture, chip, board, check and grammar in one place.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html" class="here">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead"><h1>Reference</h1><p class="lede">Every keyboard shortcut, mouse gesture, chip, board, check and grammar in one place.</p></div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#keyboard-shortcuts">Keyboard shortcuts</a><a href="#mouse-and-trackpad">Mouse and trackpad</a><a href="#toolbar">Toolbar</a><a href="#assembler">Assembler</a><a href="#watch-and-condition-expressions">Watch and condition expressions</a><a href="#design-checks">Design checks</a><a href="#where-things-are-stored">Where things are stored</a>
+    </aside>
+    <div class="content">
+      <section id="keyboard-shortcuts" class="sub">
+        <h2>Keyboard shortcuts</h2>
+        <p>Debugger keys work everywhere, including while the cursor is in the code editor.</p>
+        <table><thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody><tr><td>F5</td><td>Continue (or pause, if running)</td></tr><tr><td>F9</td><td>Toggle a breakpoint on the caret's line</td></tr><tr><td>F10</td><td>Step over a CALL / INT / REP</td></tr><tr><td>Ctrl+F10</td><td>Run to the caret line</td></tr><tr><td>F11</td><td>Step into (one instruction)</td></tr><tr><td>Shift+F11</td><td>Step out — run until the current subroutine returns</td></tr><tr><td>Ctrl/Cmd+Z</td><td>Undo</td></tr><tr><td>Ctrl/Cmd+Shift+Z, Ctrl+Y</td><td>Redo</td></tr><tr><td>Delete / Backspace</td><td>Delete the selection (edit mode)</td></tr><tr><td>Escape</td><td>Cancel placement or wiring, close a dialog</td></tr><tr><td>Any key, while running</td><td>Sent to the board's XT keyboard as a real scancode</td></tr></tbody></table>
+      </section><section id="mouse-and-trackpad" class="sub">
+        <h2>Mouse and trackpad</h2>
+        
+        <table><thead><tr><th>Where</th><th>Gesture</th><th>Result</th></tr></thead>
+        <tbody><tr><td>Canvas</td><td>Wheel</td><td>Zoom about the pointer (0.25×–6×)</td></tr><tr><td>Canvas</td><td>Drag empty space / middle-drag / Alt+drag</td><td>Pan</td></tr><tr><td>Canvas</td><td>Click pin, click pin</td><td>Wire two pins</td></tr><tr><td>Canvas</td><td>Shift+click pin</td><td>Wire the whole numbered family as a bus</td></tr><tr><td>Canvas</td><td>Drag a chip</td><td>Move it (snaps to the grid)</td></tr><tr><td>Canvas</td><td>Click a wire / bus trunk</td><td>Select that wire / the whole bundle</td></tr><tr><td>Canvas</td><td>Right-click, right-click again</td><td>Two-stage delete</td></tr><tr><td>Canvas</td><td>Double-click a memory chip</td><td>Chip-local hex editor</td></tr><tr><td>Canvas</td><td>Double-click a running peripheral</td><td>Programmer's view</td></tr><tr><td>Canvas</td><td>Double-click the monitor</td><td>The CRT window</td></tr><tr><td>Canvas</td><td>Double-click a chip while editing</td><td>Properties + tabular wiring</td></tr><tr><td>Canvas</td><td>Hover a pin</td><td>Probe tooltip + net glow</td></tr><tr><td>Canvas</td><td>Click a switch or button while running</td><td>Actually operate it</td></tr><tr><td>Waveform</td><td>Pinch / Ctrl+wheel</td><td>Horizontal zoom at the pointer</td></tr><tr><td>Waveform</td><td>Two-finger horizontal scroll</td><td>Pan through history</td></tr><tr><td>Waveform</td><td>Drag</td><td>Pan; click without dragging drops the time cursor</td></tr><tr><td>Gutter</td><td>Click / Shift+click</td><td>Breakpoint / conditional breakpoint</td></tr><tr><td>Splitters</td><td>Drag / double-click</td><td>Resize / collapse a pane</td></tr></tbody></table>
+      </section><section id="toolbar" class="sub">
+        <h2>Toolbar</h2>
+        
+        <table><thead><tr><th>Control</th><th>What it does</th></tr></thead>
+        <tbody><tr><td>▶ Start / ⏹ Stop</td><td>Run design checks, program ROMs, prove the memory map, build and run the simulation</td></tr><tr><td>⏸ Pause / ▶ Resume</td><td>Freeze time; pausing also leaves turbo</td></tr><tr><td>⭢ cycle</td><td>Advance one clock half-step</td></tr><tr><td>⭢ insn</td><td>Run exactly one instruction</td></tr><tr><td>speed</td><td>Ten stops: 2, 10, 60, 300, 1500, 8000, 40k, 200k, 1M steps/second, then max</td></tr><tr><td>⚡ turbo</td><td>Compiled clock tree + batched CPU — real 8088 speed; waveform capture pauses</td></tr><tr><td>rewind</td><td>Scrub backwards through recorded history</td></tr><tr><td>↶ ↷</td><td>Undo / redo board edits</td></tr><tr><td>📖 lab</td><td>The guided exercise for boards that ship one</td></tr><tr><td>〰 wires</td><td>No-wire viewing mode</td></tr><tr><td>⚡ complete</td><td>Scan the whole board: offer every possible hookup, and repair missing connections</td></tr><tr><td>▦ memory</td><td>Unified hex editor across the proved address map</td></tr><tr><td>🖴 disks</td><td>The disk image library</td></tr><tr><td>📷 board</td><td>Save the schematic as a PNG</td></tr><tr><td>theme</td><td>Twenty colour schemes</td></tr><tr><td>save / load</td><td>Write or restore a complete session as JSON</td></tr></tbody></table>
+      </section><section id="assembler" class="sub">
+        <h2>Assembler</h2>
+        <p>A single-pass 8086 assembler with forward references resolved by fixups.</p>
+        <table><thead><tr><th>Feature</th><th>Detail</th></tr></thead>
+        <tbody><tr><td>Directives</td><td>ORG, DB (with strings), DW, TIMES n db x, name EQU expr, END/CPU/BITS (ignored)</td></tr><tr><td>Labels</td><td>name: — letters, digits, _ . @ ? — case-insensitive</td></tr><tr><td>Numbers</td><td>0x1F, 1Fh, 0b1010, 1010b, decimal, 'c' and &quot;cc&quot; character literals, $ for here</td></tr><tr><td>Operators</td><td>+ - * / ~ and parentheses</td></tr><tr><td>Size hints</td><td>byte ptr / word ptr; segment overrides es: cs: ss: ds:</td></tr><tr><td>Addressing</td><td>[bx+si+disp], [bp+di], [si], [di], [bp], [bx], [addr] — all 8086 modes</td></tr><tr><td>Instructions</td><td>The full 8086 set: ALU groups, shifts/rotates, string ops with REP prefixes, MUL/DIV/IMUL/IDIV, INC/DEC, PUSH/POP, MOV in every form, TEST, XCHG, LEA/LDS/LES, IN/OUT, JMP/CALL near, far and indirect, all sixteen Jcc, LOOP family, INT/IRET/INTO, flag ops, HLT, AAM/AAD/AAA/AAS/DAA/DAS, XLAT, LOCK</td></tr><tr><td>Output</td><td>Bytes (unwritten holes filled 0xFF), a line→address listing, and a symbol table — both consumed by the debugger</td></tr></tbody></table>
+      </section><section id="watch-and-condition-expressions" class="sub">
+        <h2>Watch and condition expressions</h2>
+        <p>Used for watches, breakpoint conditions, and watchpoint addresses.</p>
+        <table><thead><tr><th>Form</th><th>Example</th></tr></thead>
+        <tbody><tr><td>16-bit registers</td><td>AX CX DX BX SP BP SI DI</td></tr><tr><td>8-bit halves</td><td>AL AH CL CH DL DH BL BH</td></tr><tr><td>Segment registers, IP, FLAGS</td><td>CS DS ES SS IP FLAGS</td></tr><tr><td>Flag bits</td><td>CF PF AF ZF SF TF IF DF OF</td></tr><tr><td>Your labels</td><td>counter, sub1 — from the assembled symbol table</td></tr><tr><td>Byte / word dereference</td><td>b[0x40], w[counter], [SI] (bare brackets mean a word)</td></tr><tr><td>Segmented dereference</td><td>w[ES:DI], b[0:0x417]</td></tr><tr><td>Numbers</td><td>0x1F, 1Fh, 0b1010, 31</td></tr><tr><td>Arithmetic</td><td>+ - * / % &lt;&lt; &gt;&gt;</td></tr><tr><td>Comparison and logic</td><td>== != &lt; &lt;= &gt; &gt;= &amp;&amp; || ! &amp; | ^ ~</td></tr></tbody></table>
+      </section><section id="design-checks" class="sub">
+        <h2>Design checks</h2>
+        
+        <table><thead><tr><th>Kind</th><th>Meaning</th></tr></thead>
+        <tbody><tr><td>Strict</td><td>Blocks Start — a VCC/GND short, two outputs driving one net, a missing required pin</td></tr><tr><td>Weak</td><td>A warning you can run with — a floating input that reads as 1, a missing pull-up, an unwired output-enable</td></tr><tr><td>Runtime</td><td>Bus contention and combinational oscillation stop the simulation and explain themselves</td></tr></tbody></table>
+      </section><section id="where-things-are-stored" class="sub">
+        <h2>Where things are stored</h2>
+        
+        <table><thead><tr><th>What</th><th>Where</th></tr></thead>
+        <tbody><tr><td>Autosaved session</td><td>localStorage — offered back when you return</td></tr><tr><td>Theme and pane layout</td><td>localStorage</td></tr><tr><td>Disk images you create</td><td>IndexedDB, kept between sessions</td></tr><tr><td>Explicit saves</td><td>A JSON file on your machine: board, program, breakpoints, watches, ROM images</td></tr></tbody></table>
+      </section>
+    </div>
+  </div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

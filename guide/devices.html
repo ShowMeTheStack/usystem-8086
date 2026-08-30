@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en" data-page="devices">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Devices — µSystem 8086</title>
+<meta name="description" content="The monitor, the keyboard, the speaker and the printer — the parts that make a board feel like a computer.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html" class="here">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>Devices</h1>
+    <p class="lede">The monitor, the keyboard, the speaker and the printer — the parts that make a board feel like a computer.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#a-whole-pc">A whole PC</a><a href="#on-the-board">On the board</a><a href="#monitor-and-keyboard">Monitor and keyboard</a><a href="#devices-at-work">Devices at work</a><a href="#serial">Serial</a>
+      <div class="tocmeta">16 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>Devices are simulated at their signal pins like everything else. The Hercules card scans a real frame
+      buffer and drives HSYNC, VSYNC and VIDEO into the monitor; the keyboard shifts scancodes down a serial
+      line one bit at a time; the speaker's cone follows a timer output through a gate.</p>
+      <p>Double-click the monitor and you get a full phosphor CRT with scanlines, glow and glare — and, when a
+      keyboard is on the board, an on-screen XT keyboard docked beneath it. Typing on your real keyboard sends
+      genuine scancodes down the wire.</p></div><section id="a-whole-pc" class="sub" data-name="a whole pc">
+      <h2>A whole PC</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="474">
+  <img loading="lazy" src="shots/xt-board.jpg" alt="The PC/XT board">
+  <figcaption><b>The PC/XT board</b> — CPU, DMA, interrupt controller, timer, PPI, floppy controller, XT-IDE, serial port, Hercules card, keyboard and speaker — a complete machine on one canvas.</figcaption>
+</figure></div>
+    </section><section id="on-the-board" class="sub" data-name="on the board">
+      <h2>On the board</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="475">
+  <img loading="lazy" src="shots/dev-spkr.jpg" alt="D1 — SPKR">
+  <figcaption><b>D1 — SPKR</b> — The speaker shows its cone moving and labels the frequency it is being driven at.</figcaption>
+</figure>
+<figure class="shot" data-i="476">
+  <img loading="lazy" src="shots/dev-sw8.jpg" alt="D2 — SW8">
+  <figcaption><b>D2 — SW8</b> — The configuration switches — flip them while the machine runs and the BIOS sees a different machine next boot.</figcaption>
+</figure>
+<figure class="shot" data-i="477">
+  <img loading="lazy" src="shots/dev-upd765.jpg" alt="D3 — UPD765">
+  <figcaption><b>D3 — UPD765</b> — The floppy controller, moving sectors over DMA channel 2.</figcaption>
+</figure>
+<figure class="shot" data-i="478">
+  <img loading="lazy" src="shots/dev-xtkbd.jpg" alt="D7 — XTKBD">
+  <figcaption><b>D7 — XTKBD</b> — A full XT-84 keyboard drawn key by key — press a key on your own keyboard and you can see it depress here.</figcaption>
+</figure>
+<figure class="shot" data-i="479">
+  <img loading="lazy" src="shots/dev-hgc.jpg" alt="D8 — HGC">
+  <figcaption><b>D8 — HGC</b> — The Hercules card: 32K of video RAM, a 6845-style CRTC, and real HSYNC/VSYNC/VIDEO outputs.</figcaption>
+</figure>
+<figure class="shot" data-i="480">
+  <img loading="lazy" src="shots/dev-crt.jpg" alt="D9 — CRT">
+  <figcaption><b>D9 — CRT</b> — The monitor renders live from the video card's frame buffer, right on the schematic.</figcaption>
+</figure></div>
+    </section><section id="monitor-and-keyboard" class="sub" data-name="monitor and keyboard">
+      <h2>Monitor and keyboard</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="481">
+  <img loading="lazy" src="shots/crt-window.jpg" alt="The CRT window">
+  <figcaption><b>The CRT window</b> — A full phosphor screen rendered from the real Hercules frame buffer — with scanlines, glow and glare — and the on-screen XT keyboard docked beneath it.</figcaption>
+</figure>
+<figure class="shot" data-i="482">
+  <img loading="lazy" src="shots/crt-kbd.jpg" alt="The keyboard dock">
+  <figcaption><b>The keyboard dock</b> — Click the keys, or type on your own keyboard: either way real scancodes travel the serial line into the shift register and raise IRQ1.</figcaption>
+</figure></div>
+    </section><section id="devices-at-work" class="sub" data-name="devices at work">
+      <h2>Devices at work</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="483">
+  <img loading="lazy" src="shots/dev-hgc-8088-crt.jpg" alt="Video from a bare 8088">
+  <figcaption><b>Video from a bare 8088</b> — No BIOS, no operating system: an 8088 writing characters straight into video memory at B000:0000.</figcaption>
+</figure>
+<figure class="shot" data-i="484">
+  <img loading="lazy" src="shots/dev-seg7-count-seg7.jpg" alt="Seven-segment display">
+  <figcaption><b>Seven-segment display</b> — Common cathode, driven from a '373 output port, with the digits decoded in software from a segment table.</figcaption>
+</figure>
+<figure class="shot" data-i="485">
+  <img loading="lazy" src="shots/dev-traffic-8255-led8.jpg" alt="LEDs on a PPI port">
+  <figcaption><b>LEDs on a PPI port</b> — An 8255 drives a traffic light from port A — the whole board was wired by autoconnect.</figcaption>
+</figure>
+<figure class="shot" data-i="486">
+  <img loading="lazy" src="shots/dev-lpt-printer-printer.jpg" alt="The printer">
+  <figcaption><b>The printer</b> — A Centronics printer with a real BUSY/ACK handshake — and paper you can read.</figcaption>
+</figure>
+<figure class="shot" data-i="487">
+  <img loading="lazy" src="shots/dev-pc-speaker-spkr.jpg" alt="The speaker">
+  <figcaption><b>The speaker</b> — The 8253 in mode 3 is a square-wave synthesiser; the symbol shows the live frequency.</figcaption>
+</figure>
+<figure class="shot" data-i="488">
+  <img loading="lazy" src="shots/dev-dip-echo-sw8.jpg" alt="DIP switches">
+  <figcaption><b>DIP switches</b> — Eight switches you can flip while the machine runs.</figcaption>
+</figure></div>
+    </section><section id="serial" class="sub" data-name="serial">
+      <h2>Serial</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="489">
+  <img loading="lazy" src="shots/terminal.jpg" alt="The serial terminal">
+  <figcaption><b>The serial terminal</b> — Green phosphor on the other end of the wire: the 8250's transmit stream, and a box to type back down the line.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

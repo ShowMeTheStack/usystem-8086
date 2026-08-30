@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" data-page="overview">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started — µSystem 8086</title>
+<meta name="description" content="What the tool is, what the window contains, and how to get a board running in thirty seconds.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html" class="here">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>Getting started</h1>
+    <p class="lede">What the tool is, what the window contains, and how to get a board running in thirty seconds.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#the-workspace">The workspace</a><a href="#the-toolbar">The toolbar</a><a href="#panes">Panes</a><a href="#first-run">First run</a>
+      <div class="tocmeta">23 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p><strong>µSystem 8086 replaces a hardware trainer kit.</strong> Instead of a fixed board with fixed
+      chips, you get the parts: a CPU, a clock generator, memories, decoders, latches, gates, peripheral
+      controllers, and the devices that make a computer feel real — a monitor, a keyboard, a speaker, a
+      printer, disk drives. You place them, wire them pin to pin, write assembly, and press Start. Every wire
+      you draw carries a real logic level; every chip is simulated at its pins.</p>
+      <p>Two things make it more than a schematic toy. First, the CPU is <strong>cycle-accurate</strong> and
+      passes the complete SingleStepTests/8088 suite — 3,007,000 of 3,007,000 tests exactly, flags included.
+      Second, nothing about the board is declared: the address map is <em>discovered</em> by driving your real
+      decode gates and watching which chip answers. If you wire it wrong, the tool shows you wrong — the same
+      way an oscilloscope would.</p>
+      <p class="tip"><strong>Thirty-second start:</strong> pick <em>Minimal 8088 kit</em> in the preset
+      dropdown, press <strong>▶ Start</strong>, and watch the LEDs blink. Then press <strong>⏸ Pause</strong>
+      and <strong>⭢ insn</strong> to walk the program one instruction at a time.</p></div><section id="the-workspace" class="sub" data-name="the workspace">
+      <h2>The workspace</h2>
+      <p>The window is five regions: the toolbar across the top, the parts library on the
+        left, the schematic canvas in the middle, the panel stack on the right (Code, Debug, CPU, Chip,
+        Checks), and the waveform analyzer along the bottom. Every divider drags to resize and double-clicks
+        to collapse, so any region can take the whole screen when you need it.</p>
+      <div class="grid">
+<figure class="shot" data-i="0">
+  <img loading="lazy" src="shots/workspace-full.jpg" alt="The complete workspace">
+  <figcaption><b>The complete workspace</b> — Everything lives in one HTML file: the parts library on the left, the schematic canvas in the middle, the panel stack on the right, the waveform analyzer along the bottom, and the toolbar across the top. No install, no server, no accounts.</figcaption>
+</figure>
+<figure class="shot" data-i="1">
+  <img loading="lazy" src="shots/library-pane.jpg" alt="The parts library">
+  <figcaption><b>The parts library</b> — Every modelled chip and device, grouped by category. Click a part, then click the canvas to place it. The library locks while the simulation runs.</figcaption>
+</figure>
+<figure class="shot" data-i="2">
+  <img loading="lazy" src="shots/tabs.jpg" alt="The panel tabs">
+  <figcaption><b>The panel tabs</b> — Code, Debug, CPU, Chip and Checks — the five views of what your board is doing.</figcaption>
+</figure>
+<figure class="shot" data-i="3">
+  <img loading="lazy" src="shots/hint-bar.jpg" alt="The hint bar">
+  <figcaption><b>The hint bar</b> — Context-sensitive guidance: what you can do next, what the planner noticed, why the simulation stopped.</figcaption>
+</figure></div>
+    </section><section id="the-toolbar" class="sub" data-name="the toolbar">
+      <h2>The toolbar</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="4">
+  <img loading="lazy" src="shots/tb-preset-picker.jpg" alt="Preset picker">
+  <figcaption><b>Preset picker</b> — Twenty-one boards ship with the tool, from a ripple counter to a PC/XT that boots FreeDOS. Loading one replaces the board, the program and the waveform selection.</figcaption>
+</figure>
+<figure class="shot" data-i="5">
+  <img loading="lazy" src="shots/tb-start-stop.jpg" alt="Start / Stop">
+  <figcaption><b>Start / Stop</b> — Start runs the design checks, programs the ROMs, proves the memory map by probing your netlist, and builds the simulation.</figcaption>
+</figure>
+<figure class="shot" data-i="6">
+  <img loading="lazy" src="shots/tb-pause-resume.jpg" alt="Pause / Resume">
+  <figcaption><b>Pause / Resume</b> — Freezes simulated time. Pausing also leaves turbo, because stepping and probing want full fidelity.</figcaption>
+</figure>
+<figure class="shot" data-i="7">
+  <img loading="lazy" src="shots/tb-step-one-cycle.jpg" alt="Step one cycle">
+  <figcaption><b>Step one cycle</b> — One clock half-step. This is how you watch a bus cycle assemble itself: address out with ALE, strobe low, data sampled, strobe high.</figcaption>
+</figure>
+<figure class="shot" data-i="8">
+  <img loading="lazy" src="shots/tb-step-one-instruction.jpg" alt="Step one instruction">
+  <figcaption><b>Step one instruction</b> — Runs exactly one instruction, however many bus cycles that takes.</figcaption>
+</figure>
+<figure class="shot" data-i="9">
+  <img loading="lazy" src="shots/tb-speed.jpg" alt="Speed">
+  <figcaption><b>Speed</b> — Ten stops from two steps per second up to max: 2, 10, 60, 300, 1500, 8000, 40k, 200k, 1M, then uncapped.</figcaption>
+</figure>
+<figure class="shot" data-i="10">
+  <img loading="lazy" src="shots/tb-turbo.jpg" alt="Turbo">
+  <figcaption><b>Turbo</b> — Compiles the board's clock tree and batches CPU execution to reach real 8088 speed. Waveform capture pauses while it is engaged.</figcaption>
+</figure>
+<figure class="shot" data-i="11">
+  <img loading="lazy" src="shots/tb-rewind.jpg" alt="Rewind">
+  <figcaption><b>Rewind</b> — Scrubs backwards through recorded history — the whole machine returns to how it was, not a replay.</figcaption>
+</figure>
+<figure class="shot" data-i="12">
+  <img loading="lazy" src="shots/tb-undo-redo.jpg" alt="Undo / redo">
+  <figcaption><b>Undo / redo</b> — Every board edit is one step. An accepted autowiring plan — however many wires and created chips it involved — is also one step.</figcaption>
+</figure>
+<figure class="shot" data-i="13">
+  <img loading="lazy" src="shots/tb-guided-lab.jpg" alt="Guided lab">
+  <figcaption><b>Guided lab</b> — Appears for the nine boards that ship an exercise: numbered steps you tick off as you work.</figcaption>
+</figure>
+<figure class="shot" data-i="14">
+  <img loading="lazy" src="shots/tb-no-wire-mode.jpg" alt="No-wire mode">
+  <figcaption><b>No-wire mode</b> — Hides every wire while leaving the netlist intact. Click a chip and only its connections are drawn.</figcaption>
+</figure>
+<figure class="shot" data-i="15">
+  <img loading="lazy" src="shots/tb-complete-the-board.jpg" alt="Complete the board">
+  <figcaption><b>Complete the board</b> — Scans the whole board, offers every hookup that is possible right now, and repairs connections that have gone missing.</figcaption>
+</figure>
+<figure class="shot" data-i="16">
+  <img loading="lazy" src="shots/tb-themes.jpg" alt="Themes">
+  <figcaption><b>Themes</b> — Twenty colour schemes, ten dark and ten light.</figcaption>
+</figure>
+<figure class="shot" data-i="17">
+  <img loading="lazy" src="shots/tb-status.jpg" alt="Status">
+  <figcaption><b>Status</b> — Simulated time, cycles, instructions retired, and the measured clock rate.</figcaption>
+</figure></div>
+    </section><section id="panes" class="sub" data-name="panes">
+      <h2>Panes</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="18">
+  <img loading="lazy" src="shots/pane-left.jpg" alt="The library pane collapsed">
+  <figcaption><b>The library pane collapsed</b> — Every divider drags to resize and double-clicks to collapse. With all three collapsed the schematic takes the whole window.</figcaption>
+</figure>
+<figure class="shot" data-i="19">
+  <img loading="lazy" src="shots/pane-right.jpg" alt="The panels pane collapsed">
+  <figcaption><b>The panels pane collapsed</b> — Every divider drags to resize and double-clicks to collapse. With all three collapsed the schematic takes the whole window.</figcaption>
+</figure>
+<figure class="shot" data-i="20">
+  <img loading="lazy" src="shots/pane-wavec.jpg" alt="The waveforms pane collapsed">
+  <figcaption><b>The waveforms pane collapsed</b> — Every divider drags to resize and double-clicks to collapse. With all three collapsed the schematic takes the whole window.</figcaption>
+</figure></div>
+    </section><section id="first-run" class="sub" data-name="first run">
+      <h2>First run</h2>
+      <p>Pressing Start runs the design checks, programs the ROMs from the Code tab, proves the
+        memory map by probing the netlist, and builds the simulation. From that moment the board is frozen —
+        you cannot move a chip while it runs — but switches, buttons, the keyboard and the rewind slider all
+        stay live.</p>
+      <div class="grid">
+<figure class="shot" data-i="21">
+  <img loading="lazy" src="shots/running-board.jpg" alt="A board mid-simulation">
+  <figcaption><b>A board mid-simulation</b> — Wires carry live logic levels, the LEDs light, the analyzer fills, and the CPU panel shows registers changing.</figcaption>
+</figure>
+<figure class="shot" data-i="22">
+  <img loading="lazy" src="shots/cpu-first.jpg" alt="The CPU, live">
+  <figcaption><b>The CPU, live</b> — Registers, flags, the prefetch queue and the current bus cycle — all updating as the machine runs.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

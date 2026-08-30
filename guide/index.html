@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" data-page="index">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — µSystem 8086</title>
+<meta name="description" content="A cycle-accurate 8086/8088 computer you build chip by chip, wire by wire — in one HTML file, with no install, no server and no accounts.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page home">
+  <section class="hero">
+    <div class="herotext">
+      <h1>µSystem 8086</h1>
+      <p class="lede">A cycle-accurate 8086/8088 computer you build chip by chip, wire by wire — in one HTML file, with no install, no server and no accounts.</p>
+      <p>Build a computer chip by chip on a schematic canvas, write 8086 assembly, and watch every wire
+      carry a real logic level. The CPU is cycle-accurate and passes the complete SingleStepTests/8088 suite —
+      3,007,000 of 3,007,000 tests exactly. The address map is not declared anywhere: it is
+      <em>measured</em> by driving your own decode gates and recording which chip answers.</p>
+      <div class="cta">
+        <a class="btn primary" href="../index.html">Open the simulator ↗</a>
+        <a class="btn" href="overview.html">Start the guide</a>
+      </div>
+      <ul class="facts">
+        <li><b>21</b> ready-made boards, nine with guided labs</li>
+        <li><b>52</b> modelled chips and devices</li>
+        <li><b>1</b> HTML file — no install, no server, no accounts</li>
+        <li><b>570</b> screenshots in this guide</li>
+      </ul>
+    </div>
+    <figure class="heroshot shot" data-i="hero"><img src="shots/workspace-full.jpg" alt="The workspace"></figure>
+  </section>
+  <section class="sub">
+    <h2>What is in here</h2>
+    <div class="cards"><a class="card" href="overview.html">
+      <img loading="lazy" src="shots/workspace-full.jpg" alt="">
+      <div class="cardbody"><b>Getting started</b><span>What the tool is, what the window contains, and how to get a board running in thirty seconds.</span>
+      <em>23 screenshots</em></div></a><a class="card" href="canvas.html">
+      <img loading="lazy" src="shots/canvas-fit.jpg" alt="">
+      <div class="cardbody"><b>The canvas</b><span>Reading a schematic, hovering to probe, bus anatomy, selection, and the no-wire viewing mode.</span>
+      <em>28 screenshots</em></div></a><a class="card" href="boards.html">
+      <img loading="lazy" src="shots/board-blank.jpg" alt="">
+      <div class="cardbody"><b>The 21 boards</b><span>Every shipped design explained in full — the chips, the wiring, the memory map, the program, and the experiments worth running on it.</span>
+      <em>173 screenshots</em></div></a><a class="card" href="chips.html">
+      <img loading="lazy" src="shots/chip-8086-pinout.jpg" alt="">
+      <div class="cardbody"><b>The chip library</b><span>Every modelled part: pinouts, what each one simulates, and the programmer's views that open when you double-click a running chip.</span>
+      <em>175 screenshots</em></div></a><a class="card" href="autowiring.html">
+      <img loading="lazy" src="shots/whisper-hint.jpg" alt="">
+      <div class="cardbody"><b>Autowiring</b><span>The planner that watches the whole board, offers only designs that are actually completable, and repairs damage you did not mean to do.</span>
+      <em>20 screenshots</em></div></a><a class="card" href="running.html">
+      <img loading="lazy" src="shots/cpu-panel.jpg" alt="">
+      <div class="cardbody"><b>Running a board</b><span>Start, pause, step by cycle or instruction, rewind through history, and run at real 8088 speed.</span>
+      <em>12 screenshots</em></div></a><a class="card" href="debugging.html">
+      <img loading="lazy" src="shots/editor.jpg" alt="">
+      <div class="cardbody"><b>Debugging</b><span>Source-level breakpoints, assembly-flavoured stepping, watches, memory and IO watchpoints, a cycle-costed trace, and stepping backwards in time.</span>
+      <em>18 screenshots</em></div></a><a class="card" href="waveforms.html">
+      <img loading="lazy" src="shots/wave-span-48.jpg" alt="">
+      <div class="cardbody"><b>The waveform analyzer</b><span>A built-in logic analyzer: cycle-accurate square waves, bus lanes with hex values, deep history, and trackpad-native zooming.</span>
+      <em>15 screenshots</em></div></a><a class="card" href="memory.html">
+      <img loading="lazy" src="shots/mem-unified.jpg" alt="">
+      <div class="cardbody"><b>Memory and the address map</b><span>Hex editors at two altitudes, and an address map that is measured from your gates rather than declared.</span>
+      <em>6 screenshots</em></div></a><a class="card" href="disks.html">
+      <img loading="lazy" src="shots/disklib.jpg" alt="">
+      <div class="cardbody"><b>Disk images</b><span>FreeDOS media that ships in the file, images you build yourself, and a FAT12 toolchain that runs in the browser.</span>
+      <em>4 screenshots</em></div></a><a class="card" href="devices.html">
+      <img loading="lazy" src="shots/xt-board.jpg" alt="">
+      <div class="cardbody"><b>Devices</b><span>The monitor, the keyboard, the speaker and the printer — the parts that make a board feel like a computer.</span>
+      <em>16 screenshots</em></div></a><a class="card" href="themes.html">
+      <img loading="lazy" src="shots/theme-midnight.jpg" alt="">
+      <div class="cardbody"><b>Themes</b><span>Twenty colour schemes — ten dark, ten light — restyling the IDE, canvas and waveforms without ever lying about physics.</span>
+      <em>80 screenshots</em></div></a>
+      <a class="card" href="reference.html"><div class="cardbody"><b>Reference</b>
+      <span>Every shortcut, gesture, toolbar control, assembler directive and expression form.</span>
+      <em>tables</em></div></a>
+    </div>
+  </section>
+  <section class="sub">
+    <h2>Why it exists</h2>
+    <p>Hardware trainer kits taught a generation how a computer actually works: you could see the address
+    latch, probe the chip select, and watch a bus cycle on a scope. They were also expensive, fragile, and
+    fixed — you got the board the manufacturer soldered.</p>
+    <p>This is that bench, rebuilt as software, with the parts loose in a drawer. You wire the address latch
+    yourself. You choose partial decoding and then discover the mirrors it creates. You strap a CPU into
+    maximum mode and watch an 8288 take over the strobes. And when it does not work, the tool does what a
+    scope and a logic analyzer would do: it shows you, honestly, what your board is really doing.</p>
+  </section>
+  </main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

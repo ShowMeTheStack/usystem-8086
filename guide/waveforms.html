@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en" data-page="waveforms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The waveform analyzer — µSystem 8086</title>
+<meta name="description" content="A built-in logic analyzer: cycle-accurate square waves, bus lanes with hex values, deep history, and trackpad-native zooming.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html" class="here">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>The waveform analyzer</h1>
+    <p class="lede">A built-in logic analyzer: cycle-accurate square waves, bus lanes with hex values, deep history, and trackpad-native zooming.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#zooming">Zooming</a><a href="#reading-waves">Reading waves</a><a href="#the-cursor">The cursor</a><a href="#history">History</a><a href="#adding-signals">Adding signals</a>
+      <div class="tocmeta">15 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>Every net can be recorded. The analyzer keeps up to 131,072 half-steps of history — roughly 131,000
+      clock cycles on a kit board — and lets you scrub through all of it while the simulation keeps running.</p>
+      <p>Digital lanes render as true square waves when you are zoomed in far enough to see individual
+      transitions. Zoom out past one sample per pixel and the renderer switches to column aggregation: a
+      column that saw both a high and a low becomes a solid band. That is what a real oscilloscope shows for a
+      signal faster than its timebase, and it is honest in a way that skipping samples is not.</p></div><section id="zooming" class="sub" data-name="zooming">
+      <h2>Zooming</h2>
+      <p><strong>↔</strong> scales time from eight cycles across the screen out to the entire
+        recording; <strong>↕</strong> scales lane height. On a trackpad, a horizontal pinch zooms and moves
+        the slider with it; two-finger horizontal scrolling pans. Plain vertical scrolling is deliberately
+        left alone so it never fights the page.</p>
+      <div class="grid">
+<figure class="shot" data-i="449">
+  <img loading="lazy" src="shots/wave-span-48.jpg" alt="48 half-steps across">
+  <figcaption><b>48 half-steps across</b> — Zoomed in, every transition is a true square-wave edge and the bus lane shows each hex value.</figcaption>
+</figure>
+<figure class="shot" data-i="450">
+  <img loading="lazy" src="shots/wave-span-96.jpg" alt="96 half-steps across">
+  <figcaption><b>96 half-steps across</b> — Zoomed in, every transition is a true square-wave edge and the bus lane shows each hex value.</figcaption>
+</figure>
+<figure class="shot" data-i="451">
+  <img loading="lazy" src="shots/wave-span-240.jpg" alt="240 half-steps across">
+  <figcaption><b>240 half-steps across</b> — Zoomed in, every transition is a true square-wave edge and the bus lane shows each hex value.</figcaption>
+</figure>
+<figure class="shot" data-i="452">
+  <img loading="lazy" src="shots/wave-span-700.jpg" alt="700 half-steps across">
+  <figcaption><b>700 half-steps across</b> — Further out, the shape of a bus cycle repeating becomes visible.</figcaption>
+</figure>
+<figure class="shot" data-i="453">
+  <img loading="lazy" src="shots/wave-span-2500.jpg" alt="2500 half-steps across">
+  <figcaption><b>2500 half-steps across</b> — Further out, the shape of a bus cycle repeating becomes visible.</figcaption>
+</figure>
+<figure class="shot" data-i="454">
+  <img loading="lazy" src="shots/wave-span-12000.jpg" alt="12000 half-steps across">
+  <figcaption><b>12000 half-steps across</b> — Past one sample per pixel the renderer aggregates each column: a column that saw both a high and a low becomes a solid band — what a real oscilloscope shows for a signal faster than its timebase.</figcaption>
+</figure>
+<figure class="shot" data-i="455">
+  <img loading="lazy" src="shots/wave-span-40000.jpg" alt="40000 half-steps across">
+  <figcaption><b>40000 half-steps across</b> — Past one sample per pixel the renderer aggregates each column: a column that saw both a high and a low becomes a solid band — what a real oscilloscope shows for a signal faster than its timebase.</figcaption>
+</figure>
+<figure class="shot" data-i="456">
+  <img loading="lazy" src="shots/wave-v-0-6.jpg" alt="Lane height 60%">
+  <figcaption><b>Lane height 60%</b> — Vertical zoom runs from 60% to 250%; the signal names resize in lockstep so labels stay aligned to their lanes.</figcaption>
+</figure>
+<figure class="shot" data-i="457">
+  <img loading="lazy" src="shots/wave-v-1-6.jpg" alt="Lane height 160%">
+  <figcaption><b>Lane height 160%</b> — Vertical zoom runs from 60% to 250%; the signal names resize in lockstep so labels stay aligned to their lanes.</figcaption>
+</figure>
+<figure class="shot" data-i="458">
+  <img loading="lazy" src="shots/wave-v-2-5.jpg" alt="Lane height 250%">
+  <figcaption><b>Lane height 250%</b> — Vertical zoom runs from 60% to 250%; the signal names resize in lockstep so labels stay aligned to their lanes.</figcaption>
+</figure></div>
+    </section><section id="reading-waves" class="sub" data-name="reading waves">
+      <h2>Reading waves</h2>
+      <p>Pin lanes show 0, 1, Z and X. Bus lanes are drawn as hexagonal bands with the hex
+        value inside, exactly like a commercial analyzer. The name column shows each signal's value at the
+        cursor, or now.</p>
+      <div class="grid">
+<figure class="shot" data-i="459">
+  <img loading="lazy" src="shots/wave-names.jpg" alt="Signal list with live values">
+  <figcaption><b>Signal list with live values</b> — Each lane names its signal and shows the value at the cursor, or now: 0, 1, Z or X for pins, hex for buses.</figcaption>
+</figure>
+<figure class="shot" data-i="460">
+  <img loading="lazy" src="shots/wave-irq.jpg" alt="An interrupt on the wire">
+  <figcaption><b>An interrupt on the wire</b> — On the interrupt lab the default signal set includes INTR and ~INTA — watch INTR rise, then two ~INTA pulses, the second carrying the vector on AD0-7.</figcaption>
+</figure></div>
+    </section><section id="the-cursor" class="sub" data-name="the cursor">
+      <h2>The cursor</h2>
+      <p>Click anywhere to drop a time cursor. It reports the half-step and cycle number, and
+        every lane reports its value at that moment.</p>
+      <div class="grid">
+<figure class="shot" data-i="461">
+  <img loading="lazy" src="shots/wave-cursor.jpg" alt="The time cursor">
+  <figcaption><b>The time cursor</b> — Click anywhere to drop a cursor: it reports the half-step and the cycle number, and every lane reports its value at that moment.</figcaption>
+</figure></div>
+    </section><section id="history" class="sub" data-name="history">
+      <h2>History</h2>
+      <p>The scrollbar under the canvas spans exactly what has been recorded. Drag it to browse;
+        drag it to the right edge to re-attach to live time.</p>
+      <div class="grid">
+<figure class="shot" data-i="462">
+  <img loading="lazy" src="shots/wave-scroll.jpg" alt="The history scrollbar">
+  <figcaption><b>The history scrollbar</b> — The recording keeps up to 131,072 half-steps. Drag the bar to browse it; drag to the right edge to re-attach to live time.</figcaption>
+</figure></div>
+    </section><section id="adding-signals" class="sub" data-name="adding signals">
+      <h2>Adding signals</h2>
+      <p>Any pin on any chip can be added, and numbered pin families are offered as ready
+        made bus groups that become a single hex lane.</p>
+      <div class="grid">
+<figure class="shot" data-i="463">
+  <img loading="lazy" src="shots/wave-add.jpg" alt="Add any signal">
+  <figcaption><b>Add any signal</b> — Every chip on the board, expandable to its pins, with automatic bus groups (⛁ A0..A19) that become a single hex lane.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>

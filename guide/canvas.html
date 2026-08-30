@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en" data-page="canvas">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The canvas — µSystem 8086</title>
+<meta name="description" content="Reading a schematic, hovering to probe, bus anatomy, selection, and the no-wire viewing mode.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html"><b>µSystem 8086</b><span>guide</span></a>
+  <div class="navlinks">
+    <a href="overview.html">Start</a><a href="canvas.html" class="here">Canvas</a><a href="boards.html">Boards</a><a href="chips.html">Chips</a><a href="autowiring.html">Autowiring</a><a href="running.html">Running</a><a href="debugging.html">Debugging</a><a href="waveforms.html">Waveforms</a><a href="memory.html">Memory</a><a href="disks.html">Disks</a><a href="devices.html">Devices</a><a href="themes.html">Themes</a>
+    <a href="reference.html">Reference</a>
+  </div>
+  <a class="launch" href="../index.html" title="open the simulator">Open the tool ↗</a>
+</nav>
+<main class="page">
+  <div class="pagehead">
+    <h1>The canvas</h1>
+    <p class="lede">Reading a schematic, hovering to probe, bus anatomy, selection, and the no-wire viewing mode.</p>
+  </div>
+  <div class="layout">
+    <aside class="toc">
+      <div class="toctitle">On this page</div>
+      <a href="#reading-a-schematic">Reading a schematic</a><a href="#zooming">Zooming</a><a href="#hovering">Hovering</a><a href="#bus-anatomy">Bus anatomy</a><a href="#selecting-and-editing">Selecting and editing</a><a href="#no-wire-mode">No-wire mode</a><a href="#placing-parts">Placing parts</a>
+      <div class="tocmeta">28 screenshots</div>
+    </aside>
+    <div class="content">
+      <div class="intro">
+      <p>The canvas is a real schematic, not a block diagram. Chips are drawn as DIP outlines with the notch
+      at pin 1, pins on the sides the datasheet puts them, and active-low names carrying overbars. Zoom in far
+      enough and pin numbers appear; zoom in further and every label is legible.</p>
+      <p>Wheel to zoom (about the pointer), drag empty space to pan, and hold <kbd>Alt</kbd> to pan even over
+      a chip. Click a pin, then another pin, to wire them. Hold <kbd>Shift</kbd> while clicking a pin and the
+      entire numbered family goes across as one bus.</p></div><section id="reading-a-schematic" class="sub" data-name="reading a schematic">
+      <h2>Reading a schematic</h2>
+      <p>Everything on screen is drawn from the netlist you built — there is no
+        picture file anywhere. Chip bodies scale with their pin count, and a max-mode CPU even relabels its
+        dual-function pins (<code>~DEN</code> becomes <code>~S0</code>) the moment you strap
+        <code>MN/~MX</code> low.</p>
+      <div class="grid">
+<figure class="shot" data-i="23">
+  <img loading="lazy" src="shots/canvas-fit.jpg" alt="The whole board">
+  <figcaption><b>The whole board</b> — Chips are drawn as real DIP outlines with the notch at pin 1 and pins on the sides the datasheet puts them.</figcaption>
+</figure></div>
+    </section><section id="zooming" class="sub" data-name="zooming">
+      <h2>Zooming</h2>
+      
+      <div class="grid">
+<figure class="shot" data-i="24">
+  <img loading="lazy" src="shots/zoom-1.jpg" alt="Zoom 1×">
+  <figcaption><b>Zoom 1×</b> — Zoomed out, the board reads as a floorplan.</figcaption>
+</figure>
+<figure class="shot" data-i="25">
+  <img loading="lazy" src="shots/zoom-1-8.jpg" alt="Zoom 1.8×">
+  <figcaption><b>Zoom 1.8×</b> — Zoomed out, the board reads as a floorplan.</figcaption>
+</figure>
+<figure class="shot" data-i="26">
+  <img loading="lazy" src="shots/zoom-2-8.jpg" alt="Zoom 2.8×">
+  <figcaption><b>Zoom 2.8×</b> — Pin names appear as you zoom in.</figcaption>
+</figure>
+<figure class="shot" data-i="27">
+  <img loading="lazy" src="shots/zoom-4-2.jpg" alt="Zoom 4.2×">
+  <figcaption><b>Zoom 4.2×</b> — At high zoom, pin numbers appear alongside the names and active-low pins carry overbars.</figcaption>
+</figure>
+<figure class="shot" data-i="28">
+  <img loading="lazy" src="shots/zoom-6.jpg" alt="Zoom 6×">
+  <figcaption><b>Zoom 6×</b> — At high zoom, pin numbers appear alongside the names and active-low pins carry overbars.</figcaption>
+</figure></div>
+    </section><section id="hovering" class="sub" data-name="hovering">
+      <h2>Hovering</h2>
+      <p>Hovering is the primary way to answer "what is this connected to?". Hover any pin and
+        you get its number and kind, the name of its net, the live logic value, and the full membership of the
+        net. At the same time every pin on that net glows, so the signal's reach is visible at a glance.</p>
+      <div class="grid">
+<figure class="shot" data-i="29">
+  <img loading="lazy" src="shots/hover-ale.jpg" alt="Probing ALE">
+  <figcaption><b>Probing ALE</b> — Hovering ALE names the pin, gives its number and kind, identifies its net, shows the live logic level, and lists every other pin on that net — while the whole net glows on the canvas.</figcaption>
+</figure>
+<figure class="shot" data-i="30">
+  <img loading="lazy" src="shots/hover-rd.jpg" alt="Probing ~RD">
+  <figcaption><b>Probing ~RD</b> — Hovering ~RD names the pin, gives its number and kind, identifies its net, shows the live logic level, and lists every other pin on that net — while the whole net glows on the canvas.</figcaption>
+</figure>
+<figure class="shot" data-i="31">
+  <img loading="lazy" src="shots/hover-ad0.jpg" alt="Probing AD0">
+  <figcaption><b>Probing AD0</b> — Hovering AD0 names the pin, gives its number and kind, identifies its net, shows the live logic level, and lists every other pin on that net — while the whole net glows on the canvas.</figcaption>
+</figure>
+<figure class="shot" data-i="32">
+  <img loading="lazy" src="shots/hover-a19.jpg" alt="Probing A19">
+  <figcaption><b>Probing A19</b> — Hovering A19 names the pin, gives its number and kind, identifies its net, shows the live logic level, and lists every other pin on that net — while the whole net glows on the canvas.</figcaption>
+</figure>
+<figure class="shot" data-i="33">
+  <img loading="lazy" src="shots/hover-clk.jpg" alt="Probing CLK">
+  <figcaption><b>Probing CLK</b> — Hovering CLK names the pin, gives its number and kind, identifies its net, shows the live logic level, and lists every other pin on that net — while the whole net glows on the canvas.</figcaption>
+</figure>
+<figure class="shot" data-i="34">
+  <img loading="lazy" src="shots/hover-ready.jpg" alt="Probing READY">
+  <figcaption><b>Probing READY</b> — Hovering READY names the pin, gives its number and kind, identifies its net, shows the live logic level, and lists every other pin on that net — while the whole net glows on the canvas.</figcaption>
+</figure>
+<figure class="shot" data-i="35">
+  <img loading="lazy" src="shots/hover-mn-mx.jpg" alt="Probing MN/~MX">
+  <figcaption><b>Probing MN/~MX</b> — Hovering MN/~MX names the pin, gives its number and kind, identifies its net, shows the live logic level, and lists every other pin on that net — while the whole net glows on the canvas.</figcaption>
+</figure>
+<figure class="shot" data-i="36">
+  <img loading="lazy" src="shots/hover-io-m.jpg" alt="Probing IO/~M">
+  <figcaption><b>Probing IO/~M</b> — Hovering IO/~M names the pin, gives its number and kind, identifies its net, shows the live logic level, and lists every other pin on that net — while the whole net glows on the canvas.</figcaption>
+</figure>
+<figure class="shot" data-i="37">
+  <img loading="lazy" src="shots/hover-tip-detail.jpg" alt="The probe tooltip">
+  <figcaption><b>The probe tooltip</b> — Net name, live value, and the full membership of the net — the fastest way to answer &quot;what is this actually connected to?&quot;</figcaption>
+</figure></div>
+    </section><section id="bus-anatomy" class="sub" data-name="bus anatomy">
+      <h2>Bus anatomy</h2>
+      <p>Buses are drawn the way a draughtsman draws them. Individual pins leave on curved
+        leads, gather at a tap a short distance off the chip body, run as a single straight trunk with sharp
+        mitred corners, and fan back out at the far end. The router scores candidate paths against chip bodies
+        it would cross and lanes other buses already took, so trunks separate instead of overlapping.</p>
+        <p>When a trunk is long enough and you are zoomed in, it carries a classic slash label:
+        <code>16 · AD[15:0] = 3F2A</code> — the width, the bus name, and the live value at that instant.</p>
+      <div class="grid">
+<figure class="shot" data-i="38">
+  <img loading="lazy" src="shots/bus-anatomy.jpg" alt="Buses drawn like a schematic">
+  <figcaption><b>Buses drawn like a schematic</b> — Pins fan out on curved leads, gather at a tap, run as one straight trunk with mitred corners, then fan back out at the far end.</figcaption>
+</figure>
+<figure class="shot" data-i="39">
+  <img loading="lazy" src="shots/bus-fan-74ls373.jpg" alt="Fan-out at the 74LS373">
+  <figcaption><b>Fan-out at the 74LS373</b> — Eight leads curve out of the trunk into the latch's D inputs — you can follow any single bit by eye.</figcaption>
+</figure>
+<figure class="shot" data-i="40">
+  <img loading="lazy" src="shots/bus-fan-eprom2764.jpg" alt="Fan-out at the EPROM2764">
+  <figcaption><b>Fan-out at the EPROM2764</b> — The same bundle arrives at the ROM and disperses into its address pins.</figcaption>
+</figure>
+<figure class="shot" data-i="41">
+  <img loading="lazy" src="shots/bus-slash-live.jpg" alt="Slash labels carry live values">
+  <figcaption><b>Slash labels carry live values</b> — Each trunk is tagged with its width, its name and its current hex value: 8 · AD[7:0] = 5A.</figcaption>
+</figure></div>
+    </section><section id="selecting-and-editing" class="sub" data-name="selecting and editing">
+      <h2>Selecting and editing</h2>
+      <p>Click selects; <kbd>Delete</kbd> removes. Right-click is a two-stage
+        delete — the first right-click selects, the second on the same target deletes — so nothing disappears
+        by accident. Selecting one lead of a bus selects the whole bundle.</p>
+      <div class="grid">
+<figure class="shot" data-i="42">
+  <img loading="lazy" src="shots/select-74ls138.jpg" alt="Selected component">
+  <figcaption><b>Selected component</b> — Click a chip to select it. Delete removes it and every wire attached to it; right-clicking it twice does the same.</figcaption>
+</figure>
+<figure class="shot" data-i="43">
+  <img loading="lazy" src="shots/select-eprom2764.jpg" alt="Selecting a memory">
+  <figcaption><b>Selecting a memory</b> — Selection also drives the Chip panel, which shows internal state and live pin values.</figcaption>
+</figure>
+<figure class="shot" data-i="44">
+  <img loading="lazy" src="shots/select-bundle.jpg" alt="Selected bus">
+  <figcaption><b>Selected bus</b> — Selecting one lead of a bus selects the whole bundle, so an eight-bit bus is deleted or moved as a unit.</figcaption>
+</figure></div>
+    </section><section id="no-wire-mode" class="sub" data-name="no-wire mode">
+      <h2>No-wire mode</h2>
+      <p><strong>〰 wires</strong> hides every wire while leaving the netlist untouched. On a
+        dense board this is the difference between a readable schematic and spaghetti. Click any chip while
+        wires are hidden and only that chip's connections are drawn.</p>
+      <div class="grid">
+<figure class="shot" data-i="45">
+  <img loading="lazy" src="shots/nowire-all.jpg" alt="Wires hidden, netlist intact">
+  <figcaption><b>Wires hidden, netlist intact</b> — 〰 wires hides every wire. Nothing about the design changes — this is a reading mode for dense boards.</figcaption>
+</figure>
+<figure class="shot" data-i="46">
+  <img loading="lazy" src="shots/nowire-hint.jpg" alt="What the hint bar says">
+  <figcaption><b>What the hint bar says</b> — In no-wire mode the hint bar reminds you that hovering a pin still lights its whole net.</figcaption>
+</figure>
+<figure class="shot" data-i="47">
+  <img loading="lazy" src="shots/nowire-8088.jpg" alt="Only the 8088's wires">
+  <figcaption><b>Only the 8088's wires</b> — Click any chip while wires are hidden and only that chip's connections are drawn — the cleanest way to trace one device at a time.</figcaption>
+</figure>
+<figure class="shot" data-i="48">
+  <img loading="lazy" src="shots/nowire-eprom2764.jpg" alt="Only the EPROM2764's wires">
+  <figcaption><b>Only the EPROM2764's wires</b> — Click any chip while wires are hidden and only that chip's connections are drawn — the cleanest way to trace one device at a time.</figcaption>
+</figure>
+<figure class="shot" data-i="49">
+  <img loading="lazy" src="shots/nowire-74ls373.jpg" alt="Only the 74LS373's wires">
+  <figcaption><b>Only the 74LS373's wires</b> — Click any chip while wires are hidden and only that chip's connections are drawn — the cleanest way to trace one device at a time.</figcaption>
+</figure></div>
+    </section><section id="placing-parts" class="sub" data-name="placing parts">
+      <h2>Placing parts</h2>
+      <p>Click a part in the library, then click the canvas. The moment it lands, the
+        autowiring planner looks at the whole board and decides whether it can offer you something — see
+        <a href="autowiring.html">Autowiring</a>.</p>
+      <div class="grid">
+<figure class="shot" data-i="50">
+  <img loading="lazy" src="shots/placing-hint.jpg" alt="Placing a part">
+  <figcaption><b>Placing a part</b> — Pick a part in the library and the hint bar tells you what happens next; click the canvas to drop it on the grid.</figcaption>
+</figure></div>
+    </section></div></div></main>
+<footer>
+  <p><b>µSystem 8086</b> — a cycle-accurate 8086/8088 trainer in a single HTML file.
+  Every screenshot in this guide was captured automatically from the running tool.</p>
+  <p class="small">570 screenshots · 13 sections ·
+  <a href="../index.html">open the simulator</a></p>
+</footer>
+<div id="lightbox" hidden>
+  <button id="lbClose" aria-label="close">✕</button>
+  <button id="lbPrev" aria-label="previous">‹</button>
+  <img id="lbImg" alt="">
+  <button id="lbNext" aria-label="next">›</button>
+  <div id="lbCap"></div>
+</div>
+<script src="guide.js"></script>
+</body>
+</html>
