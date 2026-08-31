@@ -1,4 +1,4 @@
-**Try it in your browser at http://8086.jyotiprakash.org**
+**Try it in your browser at https://8086.jyotiprakash.org**
 
 # µSystem 8086
 
